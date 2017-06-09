@@ -20,7 +20,7 @@ namespace LIMS.Web.Controllers
         [Authorization("Dispatch")]
         public ActionResult Barcodes(string serialId)
         {
-            return View(new { SerialId = serialId });
+            return View(new { SerialId = serialId }  );
         }
 
         [Authorization("Dispatch")]
