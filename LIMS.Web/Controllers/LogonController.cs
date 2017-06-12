@@ -48,6 +48,7 @@ namespace LIMS.Web.Controllers
         }
 
         /// <summary>
+        /// 注销登录
         /// </summary>
         /// <returns></returns>
         [HttpPost]
