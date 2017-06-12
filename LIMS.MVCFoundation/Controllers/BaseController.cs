@@ -169,12 +169,16 @@ namespace LIMS.MVCFoundation.Controllers
 
                     Request.Cookies.Remove(FormsAuthentication.FormsCookieName);
                     Request.Cookies.Add(cookie);
+                    filterContext.HttpContext.Response.Write("<script languge='javascript'>alert('成功改动'); window.location.href='index.aspx'</script>");
+                    filterContext.HttpContext.Response.End();
                 }
 
             }
             else
             {
-                filterContext.HttpContext.Response.Redirect("~/login.html");
+
+                filterContext.HttpContext.Response.Write("<script languge='javascript'>alert('成功改动'); window.location.href='index.aspx'</script>");
+                filterContext.HttpContext.Response.End();
                 return;
             }
         }
