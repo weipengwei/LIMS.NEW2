@@ -143,7 +143,7 @@ namespace LIMS.MVCFoundation.Controllers
                         1,
                         authTicket.Name,
                         DateTime.Now,
-                        DateTime.Now.AddMinutes(1),
+                        DateTime.Now.AddMinutes(30),
                         false,
                         authTicket.UserData,
                         FormsAuthentication.FormsCookiePath);

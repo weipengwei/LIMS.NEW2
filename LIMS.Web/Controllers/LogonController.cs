@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
 
@@ -44,6 +45,16 @@ namespace LIMS.Web.Controllers
             {
                 return Json(new ResponseResult(false, "账号或密码不存在或不匹配！"));
             }
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public JsonResult Logout()
+        {
+            Response.Cookies.Remove(FormsAuthentication.FormsCookieName);
+            return Json(true);
         }
 
         ///// <summary>
