@@ -174,7 +174,7 @@ namespace LIMS.MVCFoundation.Controllers
             }
             else
             {
-                filterContext.HttpContext.Response.Redirect("~/login.html");
+             //   filterContext.HttpContext.Response.Redirect("~/#/login");
                 return;
             }
         }

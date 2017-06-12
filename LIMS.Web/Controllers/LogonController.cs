@@ -19,7 +19,7 @@ namespace LIMS.Web.Controllers
     /// <summary>
     /// 登录服务
     /// </summary>
-    public class LogonController : BaseController
+    public class LogonController : Controller
     {
         /// <summary>
         /// 登录验证
@@ -27,7 +27,7 @@ namespace LIMS.Web.Controllers
         /// <param name="logon"></param>
         /// <returns></returns>
         [HttpPost]
-        public JsonNetResult Validate(LogonRequestModel logon)
+        public JsonResult Validate(LogonRequestModel logon)
         {
             UserEntity user;
             if (UserService.TryGetUserByAccount(logon.Account, out user)
@@ -35,14 +35,14 @@ namespace LIMS.Web.Controllers
             {
                 SecurityHelper.CreateTicket(this.Response, user);
 
-                return JsonNet(new LogonResponseModel
+                return Json(new LogonResponseModel
                 {
                     IsSuccess = true
                 });
             }
             else
             {
-                return JsonNet(new ResponseResult(false, "账号或密码不存在或不匹配！"));
+                return Json(new ResponseResult(false, "账号或密码不存在或不匹配！"));
             }
         }
 

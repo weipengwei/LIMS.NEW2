@@ -43,6 +43,7 @@ namespace LIMS.MVCFoundation.Helpers
             else
             {
                 cookie.Value = authTicket;
+               // response.Cookies.Remove(FormsAuthentication.FormsCookieName);
             }
 
             cookie.Path = FormsAuthentication.FormsCookiePath;
@@ -54,7 +55,7 @@ namespace LIMS.MVCFoundation.Helpers
                 cookie.Expires = ticket.Expiration;
             }
 
-            response.Cookies.Remove(FormsAuthentication.FormsCookieName);
+            
             response.Cookies.Add(cookie);
         }
 
