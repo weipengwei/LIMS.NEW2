@@ -7,11 +7,13 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
+using System.Web.UI;
 using LIMS.Util;
 using LIMS.Models;
 using LIMS.MVCFoundation.Attributes;
 using LIMS.MVCFoundation.Core;
 using LIMS.Repositories;
+using Newtonsoft.Json;
 
 namespace LIMS.MVCFoundation.Controllers
 {
@@ -131,7 +133,8 @@ namespace LIMS.MVCFoundation.Controllers
                 FormsAuthenticationTicket authTicket = FormsAuthentication.Decrypt(authCookie.Value);
                 if (authTicket == null || authTicket.Expired)
                 {
-                    filterContext.HttpContext.Response.Redirect("login.html");
+                    filterContext.HttpContext.Response.Write("{'isLogon':false}");
+                    filterContext.HttpContext.Response.End();
                     return;
                 }
                 else
@@ -140,7 +143,7 @@ namespace LIMS.MVCFoundation.Controllers
                         1,
                         authTicket.Name,
                         DateTime.Now,
-                        DateTime.Now.AddMinutes(30),
+                        DateTime.Now.AddMinutes(1),
                         false,
                         authTicket.UserData,
                         FormsAuthentication.FormsCookiePath);
@@ -167,19 +170,14 @@ namespace LIMS.MVCFoundation.Controllers
                         cookie.Expires = ticket.Expiration;
                     }
 
-                    Request.Cookies.Remove(FormsAuthentication.FormsCookieName);
-                    Request.Cookies.Add(cookie);
-                    filterContext.HttpContext.Response.Write("<script languge='javascript'>alert('成功改动'); window.location.href='index.aspx'</script>");
-                    filterContext.HttpContext.Response.End();
+                    filterContext.HttpContext.Response.Cookies.Remove(FormsAuthentication.FormsCookieName);
+                    filterContext.HttpContext.Response.Cookies.Add(cookie);
                 }
-
             }
             else
             {
-
-                filterContext.HttpContext.Response.Write("<script languge='javascript'>alert('成功改动'); window.location.href='index.aspx'</script>");
+                filterContext.HttpContext.Response.Write("{'isLogon':false}");
                 filterContext.HttpContext.Response.End();
-                return;
             }
         }
 

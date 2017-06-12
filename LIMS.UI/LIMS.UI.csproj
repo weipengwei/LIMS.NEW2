@@ -123,11 +123,6 @@
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="index.html" />
-    <Content Include="static\css\app.df9cd82efc685d309c020376dfe1ae2e.css" />
-    <Content Include="static\img\glyphicons-halflings-regular.8988968.svg" />
-    <Content Include="static\js\app.6c4b74d1df4e7d0fd1fd.js" />
-    <Content Include="static\js\manifest.dea7fc2fd4055d5679eb.js" />
-    <Content Include="static\js\vendor.8acf06f8300aedee0296.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -143,30 +138,6 @@
       <SubType>Designer</SubType>
     </Content>
     <None Include="Project_Readme.html" />
-    <Content Include="static\addUser.json" />
-    <Content Include="static\applyProduct.json" />
-    <Content Include="static\applyProductInfo.json" />
-    <Content Include="static\auditingProduct.json" />
-    <Content Include="static\contactInfo.json" />
-    <Content Include="static\css\app.df9cd82efc685d309c020376dfe1ae2e.css.map" />
-    <Content Include="static\editHospitalInfo.json" />
-    <Content Include="static\editPartmentInfo.json" />
-    <Content Include="static\editProductInfo.json" />
-    <Content Include="static\editUser.json" />
-    <Content Include="static\fonts\glyphicons-halflings-regular.448c34a.woff2" />
-    <Content Include="static\fonts\glyphicons-halflings-regular.e18bbf6.ttf" />
-    <Content Include="static\fonts\glyphicons-halflings-regular.f4769f9.eot" />
-    <Content Include="static\fonts\glyphicons-halflings-regular.fa27723.woff" />
-    <Content Include="static\hospitalInfo.json" />
-    <Content Include="static\js\app.6c4b74d1df4e7d0fd1fd.js.map" />
-    <Content Include="static\js\manifest.dea7fc2fd4055d5679eb.js.map" />
-    <Content Include="static\js\vendor.8acf06f8300aedee0296.js.map" />
-    <Content Include="static\partment.json" />
-    <Content Include="static\partmentFunctionInfo.json" />
-    <Content Include="static\productList.json" />
-    <Content Include="static\roleAuthority.json" />
-    <Content Include="static\user.json" />
-    <Content Include="static\userInfo.json" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LIMS.Entities\LIMS.Entities.csproj">
@@ -194,7 +165,9 @@
       <Name>LIMS.Web</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="static\" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
