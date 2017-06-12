@@ -16,24 +16,24 @@ namespace LIMS.MVCFoundation.Attributes
     [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, Inherited = true, AllowMultiple = false)]
     public class RequiredLogonAttribute : AuthorizeAttribute
     {
-        /// <summary>
-        ///    HandleUnauthorizedRequest
-        /// </summary>
-        /// <param name="filterContext"></param>
-        protected override void HandleUnauthorizedRequest(AuthorizationContext filterContext)
-        {
-            string result = SecurityRequestHandler.UnauthenticationRequestUrl(filterContext.RequestContext);
+        ///// <summary>
+        /////    HandleUnauthorizedRequest
+        ///// </summary>
+        ///// <param name="filterContext"></param>
+        //protected override void HandleUnauthorizedRequest(AuthorizationContext filterContext)
+        //{
+        //    string result = SecurityRequestHandler.UnauthenticationRequestUrl(filterContext.RequestContext);
             
-            if (filterContext.HttpContext.Request.IsAjaxRequest())
-            {
-                filterContext.HttpContext.Response.StatusCode = 401;
-            }
-            else
-            {
-                filterContext.HttpContext.Response.Redirect(result);
-            }
-            filterContext.HttpContext.Response.End();
-        }
+        //    if (filterContext.HttpContext.Request.IsAjaxRequest())
+        //    {
+        //        filterContext.HttpContext.Response.StatusCode = 401;
+        //    }
+        //    else
+        //    {
+        //        filterContext.HttpContext.Response.Redirect(result);
+        //    }
+        //    filterContext.HttpContext.Response.End();
+        //}
 
 
         protected override bool AuthorizeCore(HttpContextBase httpContext)

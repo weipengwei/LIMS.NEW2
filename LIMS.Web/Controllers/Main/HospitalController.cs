@@ -1,19 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-
-using LIMS.Util;
-using LIMS.Entities;
 using LIMS.Models;
-using LIMS.MVCFoundation.Core;
 using LIMS.MVCFoundation.Attributes;
+using LIMS.MVCFoundation.Controllers;
+using LIMS.MVCFoundation.Core;
 using LIMS.Services;
 
-using LIMS.MVCFoundation.Controllers;
-
-namespace LIMS.UI.Controllers.Main
+namespace LIMS.Web.Controllers.Main
 {
     [RequiredLogon]
     [BaseEntityValue]

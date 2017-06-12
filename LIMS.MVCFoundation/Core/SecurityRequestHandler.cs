@@ -13,7 +13,7 @@ namespace LIMS.MVCFoundation.Core
 
             //TODO:
             returnUrl = "Main/Index";
-            //var urlHelper = new LIMS.MVCFoundation.Helpers.UrlHelper(ctx);
+            var urlHelper = new LIMS.MVCFoundation.Helpers.UrlHelper(ctx);
             //if (returnUrl == null)
             //{
             //    returnUrl = urlHelper.GetReturnUrl(ctx.HttpContext.Request);

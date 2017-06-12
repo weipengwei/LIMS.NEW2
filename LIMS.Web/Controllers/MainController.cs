@@ -1,21 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Web;
-using System.Web.Security;
 using System.Web.Mvc;
-using System.Threading.Tasks;
-
-using LIMS.Util;
-using LIMS.Models;
+using System.Web.Security;
 using LIMS.Entities;
-using LIMS.Services;
+using LIMS.Models;
 using LIMS.MVCFoundation.Attributes;
 using LIMS.MVCFoundation.Controllers;
 using LIMS.MVCFoundation.Core;
+using LIMS.Services;
+using LIMS.Util;
 
-namespace LIMS.Web.Controller
+namespace LIMS.Web.Controllers
 {
     [RequiredLogon]
     public class MainController : BaseController

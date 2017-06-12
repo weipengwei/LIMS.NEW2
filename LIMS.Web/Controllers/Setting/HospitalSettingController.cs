@@ -15,8 +15,8 @@ using LIMS.MVCFoundation.Attributes;
 
 namespace LIMS.Web.Controllers.Setting
 {
-    //[RequiredLogon]
-    //[BaseEntityValue]
+    [RequiredLogon]
+    [BaseEntityValue]
     public class HospitalSettingController : BaseController
     {
 
