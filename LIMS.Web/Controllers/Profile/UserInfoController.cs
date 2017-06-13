@@ -19,16 +19,6 @@ namespace LIMS.Web.Controllers.Profile
     [BaseEntityValue]
     public class UserInfoController : BaseController
     {
-        public ActionResult Index()
-        {
-            ViewBag.ShowRoots = true;
-            string id = this.UserContext.UserId;
-            var mode = new UserService().Get(id);
-            ViewBag.ShowRoots = false;
-            ViewBag.Units = new UnitService().GetAllById(mode.UnitId);
-            return View(mode);
-        }
-
         public JsonNetResult Save(UserModel user)
         {
             if (!this.Validate(user))
@@ -66,8 +56,8 @@ namespace LIMS.Web.Controllers.Profile
             {
                 return false;
             }
-            
-            if(!string.IsNullOrEmpty(user.Password) && string.IsNullOrEmpty(user.ValidPassword))
+
+            if (!string.IsNullOrEmpty(user.Password) && string.IsNullOrEmpty(user.ValidPassword))
             {
                 if (string.Compare(user.Password, user.ValidPassword) != 0)
                 {
@@ -76,6 +66,18 @@ namespace LIMS.Web.Controllers.Profile
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// 获取用户权限
+        /// </summary>
+        /// <returns></returns>
+        public JsonNetResult UserPrivilege()
+        {
+            var user = new UserService().Get(UserContext.UserId);
+            var unit = new UnitService().GetAllById(user.UnitId);
+           //new  SystemPrivilegeService
+            return JsonNet(new ResponseResult());
         }
     }
 }
