@@ -15,6 +15,9 @@ using LIMS.MVCFoundation.Attributes;
 
 namespace LIMS.Web.Controllers.Profile
 {
+    /// <summary>
+    /// 用户以及权限
+    /// </summary>
     [RequiredLogon]
     [BaseEntityValue]
     public class UserInfoController : BaseController
@@ -72,6 +75,7 @@ namespace LIMS.Web.Controllers.Profile
         /// 获取用户权限
         /// </summary>
         /// <returns></returns>
+        [HttpPost]
         public JsonNetResult UserPrivilege()
         {
             var user = new UserService().Get(UserContext.UserId);
