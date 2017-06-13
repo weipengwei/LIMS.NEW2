@@ -14,8 +14,8 @@ using LIMS.MVCFoundation.Attributes;
 
 namespace LIMS.Web.Controllers.Setting
 {
-  //  [RequiredLogon]
-   // [BaseEntityValue]
+    [RequiredLogon]
+    [BaseEntityValue]
     public class ProductController : BaseController
     {
         /// <summary>
