@@ -75,9 +75,21 @@ namespace LIMS.Web.Controllers.Profile
         public JsonNetResult UserPrivilege()
         {
             var user = new UserService().Get(UserContext.UserId);
-            var unit = new UnitService().GetAllById(user.UnitId);
-           //new  SystemPrivilegeService
-            return JsonNet(new ResponseResult());
+            var unit = new UnitService().GetAllById(user.UnitId).FirstOrDefault();
+
+            return JsonNet(new ResponseResult(true, new
+            {
+                user = new
+                {
+                    user_Id = user.Id,
+                    user_Account = user.Account
+                },
+                unit = new
+                {
+                    unit_Type = unit.Type.GetHashCode(),
+                    unit_ParentId = unit.ParentId,
+                }
+            }));
         }
     }
 }
