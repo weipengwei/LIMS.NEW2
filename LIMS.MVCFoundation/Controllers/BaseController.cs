@@ -12,6 +12,7 @@ using LIMS.Util;
 using LIMS.Models;
 using LIMS.MVCFoundation.Attributes;
 using LIMS.MVCFoundation.Core;
+using LIMS.MVCFoundation.Helpers;
 using LIMS.Repositories;
 using Newtonsoft.Json;
 
@@ -126,59 +127,7 @@ namespace LIMS.MVCFoundation.Controllers
         {
             RepositoryBase.ClearTrans();
             base.OnActionExecuting(filterContext);
-            HttpCookie authCookie = Request.Cookies[FormsAuthentication.FormsCookieName];
-
-            if (authCookie != null)//验证登录票据是否过期
-            {
-                FormsAuthenticationTicket authTicket = FormsAuthentication.Decrypt(authCookie.Value);
-                if (authTicket == null || authTicket.Expired)
-                {
-                    filterContext.HttpContext.Response.Write("{'isLogon':false}");
-                    filterContext.HttpContext.Response.End();
-                    return;
-                }
-                else
-                {
-                    var ticket = new FormsAuthenticationTicket(
-                        1,
-                        authTicket.Name,
-                        DateTime.Now,
-                        DateTime.Now.AddMinutes(30),
-                        false,
-                        authTicket.UserData,
-                        FormsAuthentication.FormsCookiePath);
-
-                    string authTicketNew = FormsAuthentication.Encrypt(ticket);
-
-                    //将加密后的票据保存为cookie  
-                    HttpCookie cookie = Request.Cookies[FormsAuthentication.FormsCookieName];
-                    if (cookie == null)
-                    {
-                        cookie = new HttpCookie(FormsAuthentication.FormsCookieName, authTicketNew);
-                    }
-                    else
-                    {
-                        cookie.Value = authTicketNew;
-                    }
-
-                    cookie.Path = FormsAuthentication.FormsCookiePath;
-                    cookie.HttpOnly = false;
-                    cookie.Secure = FormsAuthentication.RequireSSL;
-                    cookie.Path = FormsAuthentication.FormsCookiePath;
-                    if (ticket.IsPersistent)
-                    {
-                        cookie.Expires = ticket.Expiration;
-                    }
-
-                    filterContext.HttpContext.Response.Cookies.Remove(FormsAuthentication.FormsCookieName);
-                    filterContext.HttpContext.Response.Cookies.Add(cookie);
-                }
-            }
-            else
-            {
-                filterContext.HttpContext.Response.Write("{'isLogon':false}");
-                filterContext.HttpContext.Response.End();
-            }
+            SecurityHelper.CreateTicket(this.Request, this.Response, DateTime.Now.AddMinutes(30));
         }
 
         protected override void OnActionExecuted(ActionExecutedContext filterContext)

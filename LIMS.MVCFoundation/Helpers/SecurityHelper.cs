@@ -77,5 +77,52 @@ namespace LIMS.MVCFoundation.Helpers
 
             return Convert.ToBase64String(hashValue);
         }
+
+        /// <summary>
+        /// 刷新票据
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="response"></param>
+        /// <param name="date"></param>
+        public static void CreateTicket(HttpRequestBase request, HttpResponseBase response,  DateTime date)
+        {
+            HttpCookie authCookie = request.Cookies[FormsAuthentication.FormsCookieName];
+            if (authCookie != null)
+            {
+                FormsAuthenticationTicket authTicket = FormsAuthentication.Decrypt(authCookie.Value);
+                var ticket = new FormsAuthenticationTicket(
+                    1,
+                    authTicket?.Name,
+                    DateTime.Now,
+                    date,
+                    false,
+                    authTicket?.UserData,
+                    FormsAuthentication.FormsCookiePath);
+
+                string authTicketNew = FormsAuthentication.Encrypt(ticket);
+
+                //将加密后的票据保存为cookie  
+                HttpCookie cookie = request.Cookies[FormsAuthentication.FormsCookieName];
+                if (cookie == null)
+                {
+                    cookie = new HttpCookie(FormsAuthentication.FormsCookieName, authTicketNew);
+                }
+                else
+                {
+                    cookie.Value = authTicketNew;
+                }
+
+                cookie.Path = FormsAuthentication.FormsCookiePath;
+                cookie.HttpOnly = false;
+                cookie.Secure = FormsAuthentication.RequireSSL;
+                cookie.Path = FormsAuthentication.FormsCookiePath;
+                if (ticket.IsPersistent)
+                {
+                    cookie.Expires = date;
+                }
+                response.Cookies.Remove(FormsAuthentication.FormsCookieName);
+                response.Cookies.Add(cookie);
+            }
+        }
     }
 }

@@ -59,6 +59,11 @@ namespace LIMS.Web.Controllers.Setting
             return JsonNet(new ResponseResult());
         }
 
+        /// <summary>
+        /// 保存产品信息验证
+        /// </summary>
+        /// <param name="product"></param>
+        /// <returns></returns>
         private bool Validate(ProductEntity product)
         {
             if (string.IsNullOrEmpty(product.Name))
@@ -75,7 +80,14 @@ namespace LIMS.Web.Controllers.Setting
             {
                 return false;
             }
-
+            if (string.IsNullOrWhiteSpace(product.RegisterNumber))
+            {
+                return false;
+            }
+            if (product.ValidDate < DateTime.Now)
+            {
+                return false;
+            }
             return true;
         }
     }

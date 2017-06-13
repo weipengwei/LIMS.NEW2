@@ -16,7 +16,7 @@ namespace LIMS.MVCFoundation.Configs
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}",
-                defaults: new { controller = "Logon", action = "Index", id = UrlParameter.Optional }
+                defaults: new { url="~/index.html", id = UrlParameter.Optional }
             );
 
             SetProfileBizRoute(routes);

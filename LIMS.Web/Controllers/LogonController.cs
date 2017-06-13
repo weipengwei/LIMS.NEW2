@@ -54,44 +54,8 @@ namespace LIMS.Web.Controllers
         [HttpPost]
         public JsonResult Logout()
         {
-            Response.Cookies.Remove(FormsAuthentication.FormsCookieName);
+            SecurityHelper.CreateTicket(this.Request,this.Response,DateTime.Now.AddMinutes(-1));
             return Json(true);
         }
-
-        ///// <summary>
-        ///// 登录验证
-        ///// </summary>
-        ///// <param name="logon"></param>
-        ///// <returns></returns>
-        //[HttpPost]
-        //public JsonNetResult Validate(LogonRequestModel logon)
-        //{
-        //    UserEntity user;
-        //    if (UserService.TryGetUserByAccount(logon.Account, out user)
-        //        && SecurityHelper.ValidatePassword(logon.Password, user.Password))
-        //    {
-        //        if (false)//user.IsChangePassword)
-        //        {
-        //            return JsonNet(new LogonResponseModel
-        //            {
-        //                RedirectUrl = this.Url.Content("~/Logon/ChangePassword")
-        //            });
-        //        }
-        //        else
-        //        {
-        //            SecurityHelper.CreateTicket(this.Response, user);
-
-        //            return JsonNet(new LogonResponseModel
-        //            {
-        //                IsSuccess = true,
-        //                RedirectUrl = string.IsNullOrEmpty(logon.ReturnUrl) ? this.Url.Content("~/Main/Index") : logon.ReturnUrl
-        //            });
-        //        }
-        //    }
-        //    else
-        //    {
-        //        return JsonNet(new ResponseResult(false, "账号或密码不存在或不匹配！"));
-        //    }
-        //}
     }
 }
