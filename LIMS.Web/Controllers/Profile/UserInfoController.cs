@@ -75,7 +75,7 @@ namespace LIMS.Web.Controllers.Profile
         /// 获取用户权限
         /// </summary>
         /// <returns></returns>
-        [HttpPost]
+        [HttpOptions,HttpPost]
         public JsonNetResult UserPrivilege()
         {
             var user = new UserService().Get(UserContext.UserId);
@@ -91,8 +91,11 @@ namespace LIMS.Web.Controllers.Profile
                 unit = new
                 {
                     unit_Type = isAdmin?"1" : unit.Type.GetHashCode().ToString(),
+                    unit_Name = isAdmin ? "" : unit.Name,
                     unit_ParentId = isAdmin ? "" : unit.ParentId,
-                }
+                    unit_RootId = isAdmin ? "" : unit.RootId,
+                },
+
             }));
         }
     }
