@@ -28,7 +28,7 @@ namespace LIMS.MVCFoundation.Helpers
                 user.Name, 
                 DateTime.Now, 
                 DateTime.Now.AddMinutes(30), 
-                false, 
+                true, 
                 userData, 
                 FormsAuthentication.FormsCookiePath);
 
@@ -95,7 +95,7 @@ namespace LIMS.MVCFoundation.Helpers
                     authTicket?.Name,
                     DateTime.Now,
                     date,
-                    false,
+                    true,
                     authTicket?.UserData,
                     FormsAuthentication.FormsCookiePath);
 
