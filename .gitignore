@@ -33,6 +33,7 @@ $RECYCLE.BIN/
 *.cache
 *.FileListAbsolute.txt
 .vs/
+LIMS.UI/Web.config
 # Thumbnails
 ._*
 
