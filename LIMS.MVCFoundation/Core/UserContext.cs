@@ -125,7 +125,7 @@ namespace LIMS.MVCFoundation.Core
                 if (this.RootUnitId != null)
                 {
                     var unitRoot = new UnitService().Get(this.RootUnitId);
-                    this.RootUnitName = unitRoot.Name;
+                    this.RootUnitName = unitRoot?.Name;
                 }
             }
             else

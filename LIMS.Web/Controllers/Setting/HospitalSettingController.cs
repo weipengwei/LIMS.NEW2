@@ -29,8 +29,11 @@ namespace LIMS.Web.Controllers.Setting
         [HttpPost]
         public JsonNetResult Query(string condition, PagerInfo pager)
         {
-            var list = new UnitService().QueryRoots(condition, UnitType.Hospital, pager);
-
+            if (UserContext.UnitType == UnitType.Hospital)
+            {
+                condition= new UnitService().Get(UserContext.RootUnitId)?.Name;
+            }
+            var list = new UnitService().QueryRoots( condition, UnitType.Hospital, pager);
             var result = new List<UnitModel>();
             foreach (var item in list)
             {

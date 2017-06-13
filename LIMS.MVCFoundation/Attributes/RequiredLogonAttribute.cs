@@ -23,7 +23,7 @@ namespace LIMS.MVCFoundation.Attributes
         //protected override void HandleUnauthorizedRequest(AuthorizationContext filterContext)
         //{
         //    string result = SecurityRequestHandler.UnauthenticationRequestUrl(filterContext.RequestContext);
-            
+
         //    if (filterContext.HttpContext.Request.IsAjaxRequest())
         //    {
         //        filterContext.HttpContext.Response.StatusCode = 401;
@@ -39,7 +39,7 @@ namespace LIMS.MVCFoundation.Attributes
         protected override bool AuthorizeCore(HttpContextBase httpContext)
         {
             bool result = base.AuthorizeCore(httpContext);
-            if (result)  //校验此Ticket 是否在系统中存在
+            if (result) //校验此Ticket 是否在系统中存在
             {
                 result = SecurityRequestHandler.IsLogon(httpContext.Request.RequestContext);
             }
@@ -52,5 +52,32 @@ namespace LIMS.MVCFoundation.Attributes
         }
 
 
+    }
+
+    public class AllowCorsAttribute : ActionFilterAttribute
+    {
+        private string[] _domains;
+
+        public AllowCorsAttribute(string domain)
+        {
+            _domains = new string[] {domain};
+        }
+
+        public AllowCorsAttribute(string[] domains)
+        {
+            _domains = domains;
+        }
+
+        public override void OnActionExecuting(ActionExecutingContext filterContext)
+        {
+            var context = filterContext.RequestContext.HttpContext;
+            var host = context.Request.UrlReferrer?.Host;
+            if (host != null && _domains.Contains(host))
+            {
+                context.Response.AddHeader("Access-Control-Allow-Origin", $"http://{host}");
+                context.Response.AddHeader("Access-Control-Allow-Credentials", "true");
+            }
+            base.OnActionExecuting(filterContext);
+        }
     }
 }

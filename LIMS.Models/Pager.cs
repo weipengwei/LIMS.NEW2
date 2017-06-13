@@ -10,10 +10,6 @@ namespace LIMS.Models
     {
         private const int DEFAULT_PAGE_SIZE = 50;
 
-        public int PageIndex
-        {
-            get; set;
-        }
 
         private int m_PageSize = DEFAULT_PAGE_SIZE;
         public int PageSize
