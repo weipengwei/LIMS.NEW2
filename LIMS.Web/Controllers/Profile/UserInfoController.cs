@@ -80,7 +80,7 @@ namespace LIMS.Web.Controllers.Profile
         {
             var user = new UserService().Get(UserContext.UserId);
             var unit = new UnitService().GetAllById(user.UnitId).FirstOrDefault();
-
+            bool isAdmin = user.Id == Constant.ADMIN_ID;
             return JsonNet(new ResponseResult(true, new
             {
                 user = new
@@ -90,8 +90,8 @@ namespace LIMS.Web.Controllers.Profile
                 },
                 unit = new
                 {
-                    unit_Type = unit.Type.GetHashCode(),
-                    unit_ParentId = unit.ParentId,
+                    unit_Type = isAdmin?"1" : unit.Type.GetHashCode().ToString(),
+                    unit_ParentId = isAdmin ? "" : unit.ParentId,
                 }
             }));
         }
