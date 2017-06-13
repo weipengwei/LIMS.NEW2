@@ -55,7 +55,7 @@ namespace LIMS.Web.Controllers
         public JsonResult Logout()
         {
             SecurityHelper.CreateTicket(this.Request,this.Response,DateTime.Now.AddMinutes(-1));
-            return Json(true);
+            return Json("{'IsSuccess': true}");
         }
     }
 }
