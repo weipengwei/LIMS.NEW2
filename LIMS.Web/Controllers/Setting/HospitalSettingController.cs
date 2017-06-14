@@ -31,9 +31,9 @@ namespace LIMS.Web.Controllers.Setting
         {
             if (UserContext.UnitType == UnitType.Hospital)
             {
-                condition= new UnitService().Get(UserContext.RootUnitId)?.Name;
+                condition = new UnitService().Get(UserContext.RootUnitId)?.Name;
             }
-            var list = new UnitService().QueryRoots( condition, UnitType.Hospital, pager);
+            var list = new UnitService().QueryRoots(condition, UnitType.Hospital, pager);
             var result = new List<UnitModel>();
             foreach (var item in list)
             {
@@ -221,6 +221,11 @@ namespace LIMS.Web.Controllers.Setting
             }
         }
 
+        /// <summary>
+        /// 新增产品状态
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
         public JsonNetResult SaveAuditingProduct(AuditingProductEntity entity)
         {
             try
@@ -234,27 +239,40 @@ namespace LIMS.Web.Controllers.Setting
             }
         }
 
-
+        /// <summary>
+        /// 根据医院ID获取票据信息
+        /// </summary>
+        /// <param name="hospitalId"></param>
+        /// <returns></returns>
         public ActionResult Receipts(string hospitalId)
         {
-            ViewBag.HospitalId = hospitalId;
+            if (string.IsNullOrWhiteSpace(hospitalId))
+            {
+                return JsonNet(new ResponseResult(false, null));
+            }
             var list = new ReceiptInfoService().GetByHospital(hospitalId);
-
-            return View(list);
+            return JsonNet(new ResponseResult(true, new
+            {
+                Receipts = list,
+                hospitalId
+            }));
         }
 
+        /// <summary>
+        /// 新增或修改票据信息
+        /// </summary>
+        /// <param name="receipt"></param>
+        /// <returns></returns>
         public JsonNetResult SaveReceipt(ReceiptInfoModel receipt)
         {
             if (receipt == null)
             {
                 throw new ArgumentNullException("The receipt is null.");
             }
-
             if (!this.ValidateReceipt(receipt))
             {
                 return JsonNet(new ResponseResult(false, "The receipt is invalid.", ErrorCodes.RequireField));
             }
-
             var entity = new ReceiptInfoEntity
             {
                 Id = receipt.Id,
@@ -263,11 +281,15 @@ namespace LIMS.Web.Controllers.Setting
                 HospitalId = receipt.HospitalId
             };
             new ReceiptInfoService().Save(entity);
-
             receipt.Id = entity.Id;
             return JsonNet(new ResponseResult(true, receipt));
         }
 
+        /// <summary>
+        /// 验证发票信息
+        /// </summary>
+        /// <param name="receipt"></param>
+        /// <returns></returns>
         private bool ValidateReceipt(ReceiptInfoModel receipt)
         {
             if (string.IsNullOrEmpty(receipt.Title))
@@ -284,15 +306,23 @@ namespace LIMS.Web.Controllers.Setting
         }
 
 
-
+       /// <summary>
+       /// 获取所有医院的ID和名称
+       /// </summary>
+       /// <returns></returns>
         public ActionResult UnitList()
         {
             var hospitals = new UnitService().QueryRoots(UnitType.Hospital);
-
-            ViewBag.Hospitals = hospitals.Select(item => new { Id = item.Id, Name = item.Name });
-            return View();
+            return JsonNet(new ResponseResult(true, hospitals.Select(item => new { Id = item.Id, Name = item.Name })));
         }
 
+        /// <summary>
+        /// 根据单位ID获取科室信息
+        /// </summary>
+        /// <param name="parentId">单位ID</param>
+        /// <param name="condition">科室名称</param>
+        /// <param name="pager"></param>
+        /// <returns></returns>
         public JsonNetResult QueryUnits(string parentId, string condition, PagerInfo pager)
         {
             try
@@ -333,6 +363,7 @@ namespace LIMS.Web.Controllers.Setting
             }
         }
 
+
         private IDictionary<string, ReceiptInfoModel> GetHospitalReceipts(string hospitalId)
         {
             var list = new ReceiptInfoService().GetByHospital(hospitalId);
@@ -346,19 +377,31 @@ namespace LIMS.Web.Controllers.Setting
             return dic;
         }
 
-        public ActionResult UnitEdit(string hospitalId, string id)
-        {
-            ViewBag.HospitalId = hospitalId;
-            ViewBag.HospitalReceipts = new ReceiptInfoService().GetByHospital(hospitalId);
-            if (!string.IsNullOrEmpty(id))
-            {
-                var unit = new UnitService().Get(id);
-                return View(unit);
-            }
+        /// <summary>
+        /// 获取医院票据信息
+        /// </summary>
+        /// <param name = "hospitalId" ></ param >
+        /// < param name="id"></param>
+        /// <returns></returns>
+        //public JsonNetResult UnitEdit(string hospitalId, string id)
+        //{
+        //    ViewBag.HospitalId = hospitalId;
+        //    ViewBag.HospitalReceipts = new ReceiptInfoService().GetByHospital(hospitalId);
+        //    if (!string.IsNullOrEmpty(id))
+        //    {
+        //        var unit = new UnitService().Get(id);
+        //        return View(unit);
+        //    }
 
-            return View();
-        }
+        //    return View();
+        //}
 
+
+        /// <summary>
+        /// 保存医院单位信息
+        /// </summary>
+        /// <param name="hospitalUnit"></param>
+        /// <returns></returns>
         public JsonNetResult SaveHospitalUnit(UnitModel hospitalUnit)
         {
             if (hospitalUnit == null)
@@ -396,6 +439,11 @@ namespace LIMS.Web.Controllers.Setting
             return JsonNet(new ResponseResult());
         }
 
+        /// <summary>
+        /// 验证医院单位信息
+        /// </summary>
+        /// <param name="mode"></param>
+        /// <returns></returns>
         private bool ValidateHospital(UnitModel mode)
         {
             if (string.IsNullOrEmpty(mode.Name))
