@@ -162,6 +162,7 @@ namespace LIMS.Web.Controllers.Setting
         /// <param name="hospitalId">医院ID</param>
         /// <param name="vendorId"></param>
         /// <returns></returns>
+        [HttpPost]
         public JsonNetResult GetAuditingProducts(string hospitalId, string vendorId)
         {
             if (string.IsNullOrEmpty(hospitalId))
@@ -226,6 +227,7 @@ namespace LIMS.Web.Controllers.Setting
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
+        [HttpPost]
         public JsonNetResult SaveAuditingProduct(AuditingProductEntity entity)
         {
             try
@@ -244,6 +246,7 @@ namespace LIMS.Web.Controllers.Setting
         /// </summary>
         /// <param name="hospitalId"></param>
         /// <returns></returns>
+        [HttpPost]
         public ActionResult Receipts(string hospitalId)
         {
             if (string.IsNullOrWhiteSpace(hospitalId))
@@ -263,6 +266,7 @@ namespace LIMS.Web.Controllers.Setting
         /// </summary>
         /// <param name="receipt"></param>
         /// <returns></returns>
+        [HttpPost]
         public JsonNetResult SaveReceipt(ReceiptInfoModel receipt)
         {
             if (receipt == null)
@@ -290,6 +294,7 @@ namespace LIMS.Web.Controllers.Setting
         /// </summary>
         /// <param name="receipt"></param>
         /// <returns></returns>
+        [HttpPost]
         private bool ValidateReceipt(ReceiptInfoModel receipt)
         {
             if (string.IsNullOrEmpty(receipt.Title))
@@ -310,6 +315,7 @@ namespace LIMS.Web.Controllers.Setting
        /// 获取所有医院的ID和名称
        /// </summary>
        /// <returns></returns>
+       [HttpPost]
         public ActionResult UnitList()
         {
             var hospitals = new UnitService().QueryRoots(UnitType.Hospital);
@@ -323,6 +329,7 @@ namespace LIMS.Web.Controllers.Setting
         /// <param name="condition">科室名称</param>
         /// <param name="pager"></param>
         /// <returns></returns>
+        [HttpPost]
         public JsonNetResult QueryUnits(string parentId, string condition, PagerInfo pager)
         {
             try
@@ -402,6 +409,7 @@ namespace LIMS.Web.Controllers.Setting
         /// </summary>
         /// <param name="hospitalUnit"></param>
         /// <returns></returns>
+        [HttpPost]
         public JsonNetResult SaveHospitalUnit(UnitModel hospitalUnit)
         {
             if (hospitalUnit == null)
@@ -444,6 +452,7 @@ namespace LIMS.Web.Controllers.Setting
         /// </summary>
         /// <param name="mode"></param>
         /// <returns></returns>
+        [HttpPost]
         private bool ValidateHospital(UnitModel mode)
         {
             if (string.IsNullOrEmpty(mode.Name))
@@ -466,6 +475,12 @@ namespace LIMS.Web.Controllers.Setting
 
 
         #region Hospital Products
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="hospitalId"></param>
+        /// <returns></returns>
         public ActionResult HospitalProducts(string hospitalId)
         {
             if (string.IsNullOrEmpty(hospitalId))
@@ -523,6 +538,7 @@ namespace LIMS.Web.Controllers.Setting
 
             return View();
         }
+
 
         public JsonNetResult GetFormApproveList(FormType formType)
         {

@@ -81,7 +81,11 @@ namespace LIMS.Web.Controllers.Profile
             var user = new UserService().Get(UserContext.UserId);
             var unit = new UnitService().GetAllById(user.UnitId).FirstOrDefault();
             bool isAdmin = user.Id == Constant.ADMIN_ID;
-
+            IList<SystemPrivilegeEntity> privileges=null;
+            if (unit != null && !string.IsNullOrWhiteSpace(unit.Id))
+            {
+                privileges = new SystemPrivilegeService().GetByObjectId(unit.Id);
+            }
             return JsonNet(new ResponseResult(true, new
             {
                 user = new
@@ -96,7 +100,7 @@ namespace LIMS.Web.Controllers.Profile
                     unit_ParentId = isAdmin ? "" : unit.ParentId,
                     unit_RootId = isAdmin ? "" : unit.RootId,
                 },
-
+                privileges
             }));
         }
     }

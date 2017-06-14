@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -35,19 +36,31 @@ namespace LIMS.Util
         Out = 16
     }
 
+    /// <summary>
+    /// 审批类型
+    /// </summary>
     public enum ApproverType
     {
         None = 0,
+        [Description("申请人")]
         Applyer = 1,
+        [Description("申请部门主管")]
         ApplyUnitManager = 2,
+        [Description("指定人员")]
         ChoosePerson = 3,
+        [Description("指定部门主管")]
         ChooseUnitManager = 4
     }
 
+    /// <summary>
+    /// 用户类型
+    /// </summary>
     public enum UserTitle
     {
         None = 0,
+        [Description("普通用户")]
         Normal = 1,
+        [Description("管理员")]
         Manager = 2
     }
 
