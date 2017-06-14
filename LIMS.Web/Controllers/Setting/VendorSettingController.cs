@@ -25,7 +25,7 @@ namespace LIMS.Web.Controllers.Setting
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpPost]
-        public JsonNetResult VendorEdit(string id)
+        public JsonNetResult UnitQueryById(string id)
         {
             if(string.IsNullOrEmpty(id))
             {

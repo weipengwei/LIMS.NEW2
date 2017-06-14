@@ -312,7 +312,7 @@ namespace LIMS.Web.Controllers.Setting
        /// </summary>
        /// <returns></returns>
        [HttpPost]
-       [AdminActionFilterAttribute]
+       [AdminActionFilter(UnitType.Admin, UnitType.Vendor, UnitType.Hospital)]
         public ActionResult UnitList()
         {
             var hospitals = new UnitService().QueryRoots(UnitType.Hospital);
