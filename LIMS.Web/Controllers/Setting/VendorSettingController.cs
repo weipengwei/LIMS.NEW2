@@ -27,7 +27,7 @@ namespace LIMS.Web.Controllers.Setting
         [HttpPost]
         public JsonNetResult VendorEdit(string id)
         {
-            if(!string.IsNullOrEmpty(id))
+            if(string.IsNullOrEmpty(id))
             {
                 return JsonNet(new ResponseResult(false,null, ErrorCodes.RequireField));
             }
@@ -40,7 +40,7 @@ namespace LIMS.Web.Controllers.Setting
         /// </summary>
         /// <param name="vendor"></param>
         /// <returns></returns>
-        [AdminActionFilterAttribute]
+        [AdminActionFilter(UnitType.Admin, UnitType.Vendor, UnitType.Hospital)]
         [HttpPost]
         public JsonNetResult SaveVendor(UnitModel vendor)
         {
@@ -86,7 +86,7 @@ namespace LIMS.Web.Controllers.Setting
         /// <param name="condition"></param>
         /// <param name="pager"></param>
         /// <returns></returns>
-        [AdminActionFilterAttribute]
+        [AdminActionFilter(UnitType.Admin, UnitType.Vendor, UnitType.Hospital)]
         [HttpPost]
         public JsonNetResult QueryVendors(string condition, PagerInfo pager)
         {

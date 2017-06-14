@@ -16,6 +16,20 @@ namespace LIMS.MVCFoundation.Attributes
     [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, Inherited = true, AllowMultiple = false)]
     public class AdminActionFilterAttribute : ActionFilterAttribute
     {
+        /// <summary>
+        /// 要求检验的功能编号
+        /// </summary>
+        protected UnitType[] FunctionCodes
+        {
+            get;
+            set;
+        }
+
+        public AdminActionFilterAttribute(params UnitType[] funcodes)
+        {
+            this.FunctionCodes = funcodes;
+        }
+
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
             CustomPrincipal customPrincipal = filterContext.HttpContext.User as CustomPrincipal;
@@ -23,8 +37,7 @@ namespace LIMS.MVCFoundation.Attributes
             {
                 filterContext.Result= new ContentResult() { Content = "无权访问" };
             }
-            if (customPrincipal.Context.UnitType != UnitType.Hospital && customPrincipal.Context.UnitType != UnitType.Vendor
-                && customPrincipal.Context.UnitType != UnitType.Admin)
+            if (!FunctionCodes.Contains(customPrincipal.Context.UnitType))
             {
                 filterContext.Result = new ContentResult() { Content = "无权访问" };
             }

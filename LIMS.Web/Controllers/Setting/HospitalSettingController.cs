@@ -67,7 +67,7 @@ namespace LIMS.Web.Controllers.Setting
         /// </summary>
         /// <param name="hospital"></param>
         /// <returns></returns>
-        [AdminActionFilterAttribute]
+        [AdminActionFilter(UnitType.Admin, UnitType.Vendor, UnitType.Hospital)]
         [HttpPost]
         public JsonNetResult HospitalSave(UnitModel hospital)
         {

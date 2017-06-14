@@ -29,7 +29,7 @@ namespace LIMS.Web.Controllers.Profile
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
-        [AdminActionFilter]
+        [AdminActionFilter(UnitType.Admin, UnitType.Vendor, UnitType.Hospital)]
         [HttpPost]
         public JsonNetResult Save(UserModel user)
         {
