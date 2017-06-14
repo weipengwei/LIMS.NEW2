@@ -70,6 +70,7 @@ namespace LIMS.Web.Controllers.Setting
         [HttpPost]
         public JsonNetResult HospitalSave(UnitModel hospital)
         {
+            //只有院方和管理员才可修改医院信息
             if (hospital == null)
             {
                 throw new ArgumentNullException("The hospital is null.");
@@ -78,6 +79,15 @@ namespace LIMS.Web.Controllers.Setting
             if (!this.Validate(hospital))
             {
                 return JsonNet(new ResponseResult(false, "The required attributes of hospital are not filled.", ErrorCodes.RequireField));
+            }
+            if (UserContext.UnitType != UnitType.Admin && UserContext.UnitType != UnitType.Hospital)
+            {
+                return JsonNet(new ResponseResult(false, "只有管理员与医院可修改医院信息", ErrorCodes.RequireField));
+            }
+            //
+            if (UserContext.UnitType == UnitType.Hospital && UserContext.RootUnitId != hospital.Id)
+            {
+                return JsonNet(new ResponseResult(false, "只可修改本医院信息", ErrorCodes.RequireField));
             }
 
             new UnitService().Save(new UnitEntity

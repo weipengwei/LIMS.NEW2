@@ -9,7 +9,7 @@ namespace LIMS.Util
 
     public enum DisplayModeType { Visibility = 0, Hidden = 1 }
 
-    public enum UnitType { None = 0, Hospital = 10, Vendor = 20, HospitalUnit = 30, VendorUnit = 40 }
+    public enum UnitType { None = 0,Admin=1, Hospital = 10, Vendor = 20, HospitalUnit = 30, VendorUnit = 40 }
 
     public enum UnitBusinessType { None = 0, Business = 1, Storeroom = 2 }
 
