@@ -22,14 +22,26 @@ namespace LIMS.Web.Controllers.Profile
     [BaseEntityValue]
     public class UserInfoController : BaseController
     {
+        private readonly UserService _userService= new UserService();
+
+        /// <summary>
+        /// 新增用户
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        [AdminActionFilter]
+        [HttpPost]
         public JsonNetResult Save(UserModel user)
         {
             if (!this.Validate(user))
             {
                 return JsonNet(new ResponseResult(false, "The required attributes of user are not filled.", ErrorCodes.RequireField));
             }
-
-            new UserService().Save(new UserEntity
+            if (_userService.GetByAccount(user.Account, null) != null)
+            {
+                return JsonNet(new ResponseResult(false, "该账号已存在！.", ErrorCodes.RequireField));
+            }
+            _userService.Save(new UserEntity
             {
                 Id = user.Id,
                 Name = user.Name,
@@ -43,6 +55,11 @@ namespace LIMS.Web.Controllers.Profile
             return JsonNet(new ResponseResult());
         }
 
+        /// <summary>
+        /// 添加用户时验证用户信息
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
         private bool Validate(UserModel user)
         {
             if (string.IsNullOrEmpty(user.Name))
@@ -59,7 +76,6 @@ namespace LIMS.Web.Controllers.Profile
             {
                 return false;
             }
-
             if (!string.IsNullOrEmpty(user.Password) && string.IsNullOrEmpty(user.ValidPassword))
             {
                 if (string.Compare(user.Password, user.ValidPassword) != 0)
@@ -78,7 +94,7 @@ namespace LIMS.Web.Controllers.Profile
         [HttpPost]
         public JsonNetResult UserPrivilege()
         {
-            var user = new UserService().Get(UserContext.UserId);
+            var user = _userService.Get(UserContext.UserId);
             var unit = new UnitService().GetAllById(user.UnitId).FirstOrDefault();
             bool isAdmin = user.Id == Constant.ADMIN_ID;
             IList<SystemPrivilegeEntity> privileges=null;

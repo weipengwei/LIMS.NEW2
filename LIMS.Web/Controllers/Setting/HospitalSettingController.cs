@@ -67,6 +67,7 @@ namespace LIMS.Web.Controllers.Setting
         /// </summary>
         /// <param name="hospital"></param>
         /// <returns></returns>
+        [AdminActionFilterAttribute]
         [HttpPost]
         public JsonNetResult HospitalSave(UnitModel hospital)
         {
@@ -80,11 +81,6 @@ namespace LIMS.Web.Controllers.Setting
             {
                 return JsonNet(new ResponseResult(false, "The required attributes of hospital are not filled.", ErrorCodes.RequireField));
             }
-            if (UserContext.UnitType != UnitType.Admin && UserContext.UnitType != UnitType.Hospital)
-            {
-                return JsonNet(new ResponseResult(false, "只有管理员与医院可修改医院信息", ErrorCodes.RequireField));
-            }
-            //
             if (UserContext.UnitType == UnitType.Hospital && UserContext.RootUnitId != hospital.Id)
             {
                 return JsonNet(new ResponseResult(false, "只可修改本医院信息", ErrorCodes.RequireField));
@@ -316,6 +312,7 @@ namespace LIMS.Web.Controllers.Setting
        /// </summary>
        /// <returns></returns>
        [HttpPost]
+       [AdminActionFilterAttribute]
         public ActionResult UnitList()
         {
             var hospitals = new UnitService().QueryRoots(UnitType.Hospital);

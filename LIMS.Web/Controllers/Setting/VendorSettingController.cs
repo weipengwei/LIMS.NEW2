@@ -19,22 +19,29 @@ namespace LIMS.Web.Controllers.Setting
     [BaseEntityValue]
     public class VendorSettingController : BaseController
     {
-        public ActionResult Vendors()
-        {
-            return View();
-        }
-
-        public ActionResult VendorEdit(string id)
+        /// <summary>
+        /// 根据ID获取单位信息
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public JsonNetResult VendorEdit(string id)
         {
             if(!string.IsNullOrEmpty(id))
             {
-                var mode = new UnitService().Get(id);
-                return View(mode);
+                return JsonNet(new ResponseResult(false,null, ErrorCodes.RequireField));
             }
-
-            return View();
+            var mode = new UnitService().Get(id);
+            return JsonNet(new ResponseResult(true,mode));
         }
 
+        /// <summary>
+        /// 保存供应商信息
+        /// </summary>
+        /// <param name="vendor"></param>
+        /// <returns></returns>
+        [AdminActionFilterAttribute]
+        [HttpPost]
         public JsonNetResult SaveVendor(UnitModel vendor)
         {
             if (vendor == null)
@@ -46,6 +53,11 @@ namespace LIMS.Web.Controllers.Setting
             {
                 return JsonNet(new ResponseResult(false, "The required attributes of vendor are not filled.", ErrorCodes.RequireField));
             }
+            if (UserContext.UnitType == UnitType.Vendor && UserContext.RootUnitId != vendor.Id)
+            {
+                return JsonNet(new ResponseResult(false, "只可修改本供应商信息", ErrorCodes.RequireField));
+            }
+
 
             new UnitService().Save(new UnitEntity
             {
@@ -67,7 +79,15 @@ namespace LIMS.Web.Controllers.Setting
 
             return JsonNet(new ResponseResult());
         }
-        
+
+        /// <summary>
+        /// 供应商分页查询
+        /// </summary>
+        /// <param name="condition"></param>
+        /// <param name="pager"></param>
+        /// <returns></returns>
+        [AdminActionFilterAttribute]
+        [HttpPost]
         public JsonNetResult QueryVendors(string condition, PagerInfo pager)
         {
             try
@@ -97,16 +117,24 @@ namespace LIMS.Web.Controllers.Setting
             }
         }
 
-
-
-
-        public ActionResult VendorUnits()
+        /// <summary>
+        /// 获取供应商名称和ID
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public JsonNetResult VendorUnits()
         {
             var vendors = new UnitService().QueryRoots(UnitType.Vendor);
-            ViewBag.Vendors = vendors.Select(item => new { Id = item.Id, Name = item.Name });
-            return View();
+            return JsonNet(new ResponseResult(true, vendors.Select(item => new { Id = item.Id, Name = item.Name })));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="vendorId"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPost]
         public ActionResult VendorUnitEdit(string vendorId, string id)
         {
             ViewBag.VendorId = vendorId;
@@ -119,6 +147,11 @@ namespace LIMS.Web.Controllers.Setting
             return View();
         }
 
+        /// <summary>
+        /// 保存供应商单位信息
+        /// </summary>
+        /// <param name="unit"></param>
+        /// <returns></returns>
         public JsonNetResult SaveVendorUnit(UnitModel unit)
         {
             if (unit == null)

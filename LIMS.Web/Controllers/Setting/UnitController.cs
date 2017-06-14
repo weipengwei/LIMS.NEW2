@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.Mvc;
 using LIMS.MVCFoundation.Core;
 using LIMS.MVCFoundation.Controllers;
 using LIMS.Services;
@@ -16,6 +17,13 @@ namespace LIMS.Web.Controllers.Setting
     [BaseEntityValue]
     public class UnitController : BaseController
     {
+
+        /// <summary>
+        /// 根节点ID获取单位信息
+        /// </summary>
+        /// <param name="parentId"></param>
+        /// <returns></returns>
+        [HttpPost]
         public JsonNetResult GetUnits(string parentId)
         {
             var list = new UnitService().GetByRootId(parentId);
