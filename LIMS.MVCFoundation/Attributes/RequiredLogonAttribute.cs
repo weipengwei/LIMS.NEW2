@@ -47,7 +47,6 @@ namespace LIMS.MVCFoundation.Attributes
             {
                 httpContext.Response.AddHeader("LogonFlag", result.ToString().ToLower());
             }
-
             return result;
         }
 

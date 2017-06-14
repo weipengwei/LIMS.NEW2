@@ -75,7 +75,7 @@ namespace LIMS.Web.Controllers.Profile
         /// 获取用户权限
         /// </summary>
         /// <returns></returns>
-        [HttpOptions,HttpPost]
+        [HttpPost]
         public JsonNetResult UserPrivilege()
         {
             var user = new UserService().Get(UserContext.UserId);
