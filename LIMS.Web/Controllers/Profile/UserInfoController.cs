@@ -81,6 +81,7 @@ namespace LIMS.Web.Controllers.Profile
             var user = new UserService().Get(UserContext.UserId);
             var unit = new UnitService().GetAllById(user.UnitId).FirstOrDefault();
             bool isAdmin = user.Id == Constant.ADMIN_ID;
+
             return JsonNet(new ResponseResult(true, new
             {
                 user = new

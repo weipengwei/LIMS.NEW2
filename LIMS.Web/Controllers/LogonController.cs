@@ -46,16 +46,5 @@ namespace LIMS.Web.Controllers
                 return Json(new ResponseResult(false, "账号或密码不存在或不匹配！"));
             }
         }
-
-        /// <summary>
-        /// 注销登录
-        /// </summary>
-        /// <returns></returns>
-        [HttpPost]
-        public JsonResult Logout()
-        {
-            SecurityHelper.CreateTicket(this.Request,this.Response,DateTime.Now.AddMinutes(-1));
-            return Json(new { IsSuccess =true});
-        }
     }
 }

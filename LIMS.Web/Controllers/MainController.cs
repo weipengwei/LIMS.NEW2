@@ -134,12 +134,15 @@ namespace LIMS.Web.Controllers
             return JsonNet(new ResponseResult());
         }
 
+        /// <summary>
+        /// 注销登录
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Logout()
         {
             this.ClearContext();
             FormsAuthentication.SignOut();
-
-            return new RedirectResult("~/Logon");
+            return Json(new { IsSuccess = true });
         }
 
         private void InitCookie(string hospitalId)

@@ -132,28 +132,28 @@ namespace LIMS.MVCFoundation.Controllers
 
         protected override void OnActionExecuted(ActionExecutedContext filterContext)
         {
-            base.OnActionExecuted(filterContext);
+            //base.OnActionExecuted(filterContext);
 
-            bool unHandledError = false;
-            bool commit = true;
-            if (filterContext.Exception != null && !filterContext.ExceptionHandled)
-            {
-                commit = false;
-                unHandledError = true;
-            }
-            else if (filterContext.Result is JsonNetResult
-                && ((JsonNetResult)filterContext.Result).Data is ResponseResult
-                && !((ResponseResult)((JsonNetResult)filterContext.Result).Data).IsSuccess)
-                commit = false;
+            //bool unHandledError = false;
+            //bool commit = true;
+            //if (filterContext.Exception != null && !filterContext.ExceptionHandled)
+            //{
+            //    commit = false;
+            //    unHandledError = true;
+            //}
+            //else if (filterContext.Result is JsonNetResult
+            //    && ((JsonNetResult)filterContext.Result).Data is ResponseResult
+            //    && !((ResponseResult)((JsonNetResult)filterContext.Result).Data).IsSuccess)
+            //    commit = false;
 
-            RepositoryBase.ReleaseTrans(commit, true);
+            //RepositoryBase.ReleaseTrans(commit, true);
 
-            if (unHandledError
-                && (filterContext.Result == null || filterContext.Result is EmptyResult))
-            {
-                filterContext.Result = JsonNet(new ResponseResult(filterContext.Exception));
-                filterContext.ExceptionHandled = true;
-            }
+            //if (unHandledError
+            //    && (filterContext.Result == null || filterContext.Result is EmptyResult))
+            //{
+            //    filterContext.Result = JsonNet(new ResponseResult(filterContext.Exception));
+            //    filterContext.ExceptionHandled = true;
+            //}
         }
     }
 }
