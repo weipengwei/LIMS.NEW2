@@ -23,14 +23,6 @@ namespace LIMS.Models
             get; set;
         }
 
-        public string RootUnitName
-        {
-            get; set;
-        }
-        public bool HospitalOrVendor
-        {
-            get; set;
-        }
     }
 
 }

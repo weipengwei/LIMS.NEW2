@@ -16,18 +16,19 @@ namespace LIMS.Web.Controllers
     [RequiredLogon]
     public class MainController : BaseController
     {
-        public ActionResult Index()
-        {
-
-            return View();
-        }
-
-        public PartialViewResult Menus()
+        /// <summary>
+        /// 左侧菜单以及用户信息
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public JsonNetResult Menus()
         {
             var mainMenus = new MainMenusModel
             {
                 Menus = new List<MenuModel>(),
-                IsAdmin = this.IsAdmin
+                IsAdmin = this.IsAdmin,
+                UserAccount = UserContext.Account,
+                UserName = UserContext.Name
             };
 
             IList<SystemFunctionEntity> funs;
@@ -49,7 +50,6 @@ namespace LIMS.Web.Controllers
                     funs = new SystemFunctionService().GetUserFunctions(this.UserContext.RootUnitId, this.UserContext.UserId);
                 }
             }
-            
             foreach(var fun in funs)
             {
                 var menu = new MenuModel
@@ -68,18 +68,20 @@ namespace LIMS.Web.Controllers
 
                 mainMenus.Menus.Add(menu);
             }
-
-            return PartialView("~/Views/Main/_Menus.cshtml", mainMenus);
+            var loginInfo = LoginInfo();
+            return  JsonNet(new ResponseResult(true,new { mainMenus, loginInfo }));
         }
 
-        public PartialViewResult LoginInfo()
+        /// <summary>
+        /// 获取用户信息
+        /// </summary>
+        /// <returns></returns>
+        private LoginInfoModel LoginInfo()
         {
             var loginInfo = new LoginInfoModel
             {
                 IsAdmin = this.IsAdmin,
-                UserName = this.UserContext.Name,
-                RootUnitName = this.UserContext.RootUnitName,
-                HospitalOrVendor = this.UserContext.HospitalOrVendor
+                UserName = this.UserContext.Name
             };
 
             var hospitalId = string.Empty;
@@ -123,10 +125,14 @@ namespace LIMS.Web.Controllers
             }
 
             InitCookie(hospitalId);
-
-            return PartialView("~/Views/Main/_LoginInfo.cshtml", loginInfo);
+            return loginInfo;
         }
 
+        /// <summary>
+        ///刷新cookic信息
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public JsonNetResult ChangeHospital(string id)
         {
             this.InitCookie(id);

@@ -17,5 +17,21 @@ namespace LIMS.Models
         {
             get; set;
         }
+
+        /// <summary>
+        /// 账号
+        /// </summary>
+        public string UserAccount
+        {
+            get; set;
+        }
+
+        /// <summary>
+        /// 用户名
+        /// </summary>
+        public string UserName
+        {
+            get; set;
+        }
     }
 }

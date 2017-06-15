@@ -498,6 +498,13 @@ namespace LIMS.Web.Controllers.Setting
             }));
         }
 
+        /// <summary>
+        /// 申请产品获取请详细信息
+        /// </summary>
+        /// <param name="unitId">科室ID</param>
+        /// <param name="productId">产品ID</param>
+        /// <returns></returns>
+        [HttpPost]
         public JsonNetResult GetHospitalProduct(string unitId, string productId)
         {
             try
@@ -537,18 +544,27 @@ namespace LIMS.Web.Controllers.Setting
 
 
         #region Form Approve List
+        /// <summary>
+        /// 获取审核类型
+        /// </summary>
+        /// <param name="hospitalId"></param>
+        /// <returns></returns>
+        [HttpPost]
         public ActionResult FormApproveList(string hospitalId)
         {
-            this.ViewBag.Context = new
+            return JsonNet(new ResponseResult(true, new
             {
                 HospitalId = hospitalId,
                 AuditForms = FormHelper.AuditForms()
-            };
-
-            return View();
+            }));
         }
 
-
+        /// <summary>
+        /// 获取审核人员
+        /// </summary>
+        /// <param name="formType"></param>
+        /// <returns></returns>
+        [HttpPost]
         public JsonNetResult GetFormApproveList(FormType formType)
         {
             try
@@ -633,6 +649,12 @@ namespace LIMS.Web.Controllers.Setting
             }
         }
 
+        /// <summary>
+        /// 保存审核配置
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        [HttpPost]
         public JsonNetResult SaveFormApprove(FormApproveListEntity entity)
         {
             try
@@ -671,6 +693,12 @@ namespace LIMS.Web.Controllers.Setting
             }
         }
 
+       /// <summary>
+       /// 删除审核配置
+       /// </summary>
+       /// <param name="id"></param>
+       /// <returns></returns>
+       [HttpPost]
         public JsonNetResult DeleteFormApprove(string id)
         {
             try
@@ -690,6 +718,13 @@ namespace LIMS.Web.Controllers.Setting
             }
         }
 
+        /// <summary>
+        /// 修改审核配置
+        /// </summary>
+        /// <param name="current"></param>
+        /// <param name="exchange"></param>
+        /// <returns></returns>
+        [HttpPost]
         public JsonNetResult MoveFormApprove(string current, string exchange)
         {
             try

@@ -18,20 +18,86 @@ namespace LIMS.Web.Controllers.Setting
     [BaseEntityValue]
     public class SystemFunctionController : BaseController
     {
-        public ActionResult Index(string unitId)
+        /// <summary>
+        /// 超级管理员管理权限
+        /// </summary>
+        /// <param name="unitId"></param>
+        /// <returns></returns>
+        [AdminActionFilter(UnitType.Admin)]
+        [HttpPost]
+        public JsonNetResult GetPrivilegesAdmin(string unitId)
         {
             if (string.IsNullOrEmpty(unitId))
             {
-                return View();
+                return JsonNet(new ResponseResult(false, "The unit id is empty."));
             }
+            return JsonNet(new ResponseResult(true, new
+            {
+                UnitId = unitId,
+                Functions = new SystemFunctionService().GetAll(),
+                Privileges = new SystemPrivilegeService().GetByObjectId(unitId)
+            }));
+        }
 
+        /// <summary>
+        /// 普通管理员管理权限
+        /// </summary>
+        /// <param name="mainId">医院或供应商ID</param>
+        /// <param name="unitId">子单位ID</param>
+        /// <returns></returns>
+       // [AdminActionFilter(UnitType.)]
+        [HttpPost]
+        public JsonNetResult GetPrivileges(string mainId, string unitId)
+        {
+            if (string.IsNullOrEmpty(unitId))
+            {
+                return JsonNet(new ResponseResult(false, "The unit id is empty."));
+            }
+            var allTree = new SystemFunctionService().GetAll();
+            var mainPrivileges = new SystemPrivilegeService().GetByObjectId(mainId).ToList();//主单位的权限
+            var mainFunctions = new List<SystemFunctionEntity>();
+            mainPrivileges.ForEach(m =>
+            {
+                mainFunctions.Add(allTree.FirstOrDefault(j => j.FunKey == m.FunKey && m.Operate));
+            });
+            return JsonNet(new ResponseResult(true, new
+            {
+                UnitId = unitId,
+                Functions = mainFunctions,
+                Privileges = new SystemPrivilegeService().GetByObjectId(unitId)
+            }));
+        }
+
+        /// <summary>
+        /// 超级管理员管理权限
+        /// </summary>
+        /// <param name="unitId"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public JsonNetResult GetPrivilegesUnit(string unitId)
+        {
+            if (string.IsNullOrEmpty(unitId))
+            {
+                return JsonNet(new ResponseResult(false, "The unit id is empty."));
+            }
             ViewBag.UnitId = unitId;
             ViewBag.Functions = new SystemFunctionService().GetAll();
             ViewBag.Privileges = new SystemPrivilegeService().GetByObjectId(unitId);
-
-            return View();
+            return JsonNet(new ResponseResult(true, new
+            {
+                UnitId = unitId,
+                Functions = new SystemFunctionService().GetAll(),
+                Privileges = new SystemPrivilegeService().GetByObjectId(unitId)
+            }));
         }
 
+        /// <summary>
+        /// 超级管理员保存权限
+        /// </summary>
+        /// <param name="unitId"></param>
+        /// <returns></returns>
+        [AdminActionFilter(UnitType.Admin)]
+        [HttpPost]
         public JsonNetResult Save(string unitId, IList<PrivilegeItem> privileges)
         {
             if (string.IsNullOrEmpty(unitId))
@@ -52,9 +118,7 @@ namespace LIMS.Web.Controllers.Setting
                     Operate = item.Operate
                 }).ToList();
             }
-
             new SystemPrivilegeService().Save(unitId, entities);
-
             return JsonNet(new ResponseResult());
         }
 
@@ -79,7 +143,7 @@ namespace LIMS.Web.Controllers.Setting
 
             var unit = unitService.Get(user.UnitId);
 
-            if(unit.Type == UnitType.None)
+            if (unit.Type == UnitType.None)
             {
                 return null;
             }
@@ -147,7 +211,7 @@ namespace LIMS.Web.Controllers.Setting
         {
             var units = new UnitService().GetByRootId(parentId);
             var privileges = new UserPrivilegeService().Query(userId, parentId);
-            
+
             return JsonNet(new ResponseResult(true, new { units = units, privileges = privileges }));
         }
     }
