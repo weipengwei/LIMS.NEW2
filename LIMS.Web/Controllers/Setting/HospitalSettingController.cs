@@ -130,33 +130,38 @@ namespace LIMS.Web.Controllers.Setting
         [HttpPost]
         public JsonResult GetContactInfo(string id)
         {
+            if (string.IsNullOrEmpty(id))
+            {
+                return Json(null);
+            }
             var mode = new ContactInfoService().Get(id);
             return Json(mode);
         }
 
 
-
-        public ActionResult AuditingProducts(string hospitalId)
+        /// <summary>
+        /// 医院产品产品审核页面
+        /// </summary>
+        /// <param name="hospitalId"></param>
+        /// <returns></returns>
+        public JsonNetResult AuditingProducts(string hospitalId)
         {
             if (string.IsNullOrEmpty(hospitalId))
             {
                 throw new Exception("The hospital id is empty.");
             }
-
-            ViewBag.Context = new
+            return JsonNet(new ResponseResult(true, new
             {
                 HospitalId = hospitalId,
                 Vendors = new UnitService().QueryRoots(UnitType.Vendor)
-            };
-
-            return View();
+            }));
         }
 
         /// <summary>
-        /// 获取订单状态
+        /// 根据供应商ID获取医院审核产品
         /// </summary>
         /// <param name="hospitalId">医院ID</param>
-        /// <param name="vendorId"></param>
+        /// <param name="vendorId">供应商ID</param>
         /// <returns></returns>
         [HttpPost]
         public JsonNetResult GetAuditingProducts(string hospitalId, string vendorId)
@@ -219,7 +224,7 @@ namespace LIMS.Web.Controllers.Setting
         }
 
         /// <summary>
-        /// 新增产品状态
+        /// 保存审核结果
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
@@ -474,25 +479,23 @@ namespace LIMS.Web.Controllers.Setting
         #region Hospital Products
 
         /// <summary>
-        /// 
+        /// 医院申请产品
         /// </summary>
         /// <param name="hospitalId"></param>
         /// <returns></returns>
-        public ActionResult HospitalProducts(string hospitalId)
+        [HttpPost]
+        public JsonNetResult HospitalProducts(string hospitalId)
         {
             if (string.IsNullOrEmpty(hospitalId))
             {
                 throw new Exception("The hospital id is empty.");
             }
-
-            ViewBag.Context = new
+            return JsonNet(new ResponseResult(true, new
             {
                 HospitalId = hospitalId,
                 Units = new UnitService().GetByRootId(hospitalId).Select(item => new { Id = item.Id, Name = item.Name }),
                 Products = new ProductService().Query().Select(item => new { Id = item.Id, Name = item.Name, MiniPackageCount = item.MiniPackageCount, Category = item.Category })
-            };
-
-            return View();
+            }));
         }
 
         public JsonNetResult GetHospitalProduct(string unitId, string productId)
@@ -508,8 +511,17 @@ namespace LIMS.Web.Controllers.Setting
             }
         }
 
+        /// <summary>
+        /// 保存医院申请产品
+        /// </summary>
+        /// <param name="hospitalProduct"></param>
+        /// <returns></returns>
         public JsonNetResult SaveHospitalProduct(HospitalProductEntity hospitalProduct)
         {
+            if (hospitalProduct == null)
+            {
+                return JsonNet(new ResponseResult(false,"请填写完整的信息"));
+            }
             try
             {
                 new HospitalProductService().Save(hospitalProduct);
