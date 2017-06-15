@@ -39,7 +39,7 @@ namespace LIMS.Web.Controllers.Setting
                 List<SystemFunctionEntity> childNode = Functions.Where(j => j.ParentId == m.Id).ToList();
                 if (childNode.Any())
                 {
-                    allTree.Add(new { paraent = m, childNode });
+                    allTree.Add(new { parent = m, childNode });
                 }
             });
 
@@ -78,7 +78,7 @@ namespace LIMS.Web.Controllers.Setting
                 List<SystemFunctionEntity> childNode = mainFunctions.Where(j => j.ParentId == m.Id).ToList();
                 if (childNode.Any())
                 {
-                    alTree.Add(new { paraent = m, childNode });
+                    alTree.Add(new { parent = m, childNode });
                 }
             });
             return JsonNet(new ResponseResult(true, new
