@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Web.Mvc;
 using System.Text;
@@ -31,10 +32,21 @@ namespace LIMS.Web.Controllers.Setting
             {
                 return JsonNet(new ResponseResult(false, "The unit id is empty."));
             }
+            var Functions = new SystemFunctionService().GetAll().ToList();
+            List<object> allTree = new List<object>();
+            Functions.Where(m => m.ParentId == "" ).ToList().ForEach(m =>
+            {
+                List<SystemFunctionEntity> childNode = Functions.Where(j => j.ParentId == m.Id).ToList();
+                if (childNode.Any())
+                {
+                    allTree.Add(new { paraent = m, childNode });
+                }
+            });
+
             return JsonNet(new ResponseResult(true, new
             {
                 UnitId = unitId,
-                Functions = new SystemFunctionService().GetAll(),
+                Functions = allTree,
                 Privileges = new SystemPrivilegeService().GetByObjectId(unitId)
             }));
         }
@@ -60,33 +72,19 @@ namespace LIMS.Web.Controllers.Setting
             {
                 mainFunctions.Add(allTree.FirstOrDefault(j => j.FunKey == m.FunKey && m.Operate));
             });
+            List<object> alTree = new List<object>();
+            mainFunctions.Where(m => m.ParentId == "" ).ToList().ForEach(m =>
+            {
+                List<SystemFunctionEntity> childNode = mainFunctions.Where(j => j.ParentId == m.Id).ToList();
+                if (childNode.Any())
+                {
+                    alTree.Add(new { paraent = m, childNode });
+                }
+            });
             return JsonNet(new ResponseResult(true, new
             {
                 UnitId = unitId,
-                Functions = mainFunctions,
-                Privileges = new SystemPrivilegeService().GetByObjectId(unitId)
-            }));
-        }
-
-        /// <summary>
-        /// 超级管理员管理权限
-        /// </summary>
-        /// <param name="unitId"></param>
-        /// <returns></returns>
-        [HttpPost]
-        public JsonNetResult GetPrivilegesUnit(string unitId)
-        {
-            if (string.IsNullOrEmpty(unitId))
-            {
-                return JsonNet(new ResponseResult(false, "The unit id is empty."));
-            }
-            ViewBag.UnitId = unitId;
-            ViewBag.Functions = new SystemFunctionService().GetAll();
-            ViewBag.Privileges = new SystemPrivilegeService().GetByObjectId(unitId);
-            return JsonNet(new ResponseResult(true, new
-            {
-                UnitId = unitId,
-                Functions = new SystemFunctionService().GetAll(),
+                Functions = alTree,
                 Privileges = new SystemPrivilegeService().GetByObjectId(unitId)
             }));
         }
