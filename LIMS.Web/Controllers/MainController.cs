@@ -16,12 +16,72 @@ namespace LIMS.Web.Controllers
     [RequiredLogon]
     public class MainController : BaseController
     {
+
+        public ActionResult Index()
+        {
+            return View();
+        }
+
+        /// <summary>
+        /// 左侧菜单
+        /// </summary>
+        /// <returns></returns>
+        public PartialViewResult Menus()
+        {
+            var mainMenus = new MainMenusModel
+            {
+                Menus = new List<MenuModel>(),
+                IsAdmin = this.IsAdmin
+            };
+
+            IList<SystemFunctionEntity> funs;
+            if (this.IsAdmin)
+            {
+                funs = new List<SystemFunctionEntity>();
+                funs.Add(new SystemFunctionService().GetSettingFunction());
+            }
+            else
+            {
+                if (this.UserContext.HospitalOrVendor)
+                {
+                    var hospitalId = string.IsNullOrEmpty(this.UserContext.CurrentHospital)
+                        ? this.UserContext.RootUnitId : this.UserContext.CurrentHospital;
+                    funs = new SystemFunctionService().GetUserFunctions(hospitalId, this.UserContext.UserId);
+                }
+                else
+                {
+                    funs = new SystemFunctionService().GetUserFunctions(this.UserContext.RootUnitId, this.UserContext.UserId);
+                }
+            }
+
+            foreach (var fun in funs)
+            {
+                var menu = new MenuModel
+                {
+                    Id = fun.Id,
+                    Title = fun.Title,
+                    Url = fun.Url,
+                    SubMenus = new List<MenuModel>()
+                };
+                menu.SubMenus = fun.SubFunctions.Select(item => new MenuModel
+                {
+                    Id = item.Id,
+                    Title = item.Title,
+                    Url = item.Url
+                }).ToList();
+
+                mainMenus.Menus.Add(menu);
+            }
+
+            return PartialView("~/Views/Main/_Menus.cshtml", mainMenus);
+        }
+
         /// <summary>
         /// 左侧菜单以及用户信息
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        public JsonNetResult Menus()
+        public JsonNetResult JsonMenus()
         {
             var mainMenus = new MainMenusModel
             {
@@ -144,11 +204,19 @@ namespace LIMS.Web.Controllers
         /// 注销登录
         /// </summary>
         /// <returns></returns>
-        public ActionResult Logout()
+        public ActionResult JsonLogout()
         {
             this.ClearContext();
             FormsAuthentication.SignOut();
             return Json(new { IsSuccess = true });
+        }
+
+        public ActionResult Logout()
+        {
+            this.ClearContext();
+            FormsAuthentication.SignOut();
+
+            return new RedirectResult("~/Logon");
         }
 
         private void InitCookie(string hospitalId)

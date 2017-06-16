@@ -19,12 +19,24 @@ namespace LIMS.Web.Controllers.Setting
     [BaseEntityValue]
     public class SystemFunctionController : BaseController
     {
+        public ActionResult Index(string unitId)
+        {
+            if (string.IsNullOrEmpty(unitId))
+            {
+                return View();
+            }
+
+            ViewBag.UnitId = unitId;
+            ViewBag.Functions = new SystemFunctionService().GetAll();
+            ViewBag.Privileges = new SystemPrivilegeService().GetByObjectId(unitId);
+
+            return View();
+        }
         /// <summary>
         /// 超级管理员管理权限
         /// </summary>
         /// <param name="unitId"></param>
         /// <returns></returns>
-        [AdminActionFilter(UnitType.Admin)]
         [HttpPost]
         public JsonNetResult GetPrivilegesAdmin(string unitId)
         {
@@ -32,50 +44,28 @@ namespace LIMS.Web.Controllers.Setting
             {
                 return JsonNet(new ResponseResult(false, "The unit id is empty."));
             }
-            var Functions = new SystemFunctionService().GetAll().ToList();
-            List<object> allTree = new List<object>();
-            Functions.Where(m => m.ParentId == "" ).ToList().ForEach(m =>
-            {
-                List<SystemFunctionEntity> childNode = Functions.Where(j => j.ParentId == m.Id).ToList();
-                if (childNode.Any())
-                {
-                    allTree.Add(new { parent = m, childNode });
-                }
-            });
-
-            return JsonNet(new ResponseResult(true, new
-            {
-                UnitId = unitId,
-                Functions = allTree,
-                Privileges = new SystemPrivilegeService().GetByObjectId(unitId)
-            }));
-        }
-
-        /// <summary>
-        /// 普通管理员管理权限
-        /// </summary>
-        /// <param name="mainId">医院或供应商ID</param>
-        /// <param name="unitId">子单位ID</param>
-        /// <returns></returns>
-       // [AdminActionFilter(UnitType.)]
-        [HttpPost]
-        public JsonNetResult GetPrivileges(string mainId, string unitId)
-        {
-            if (string.IsNullOrEmpty(unitId))
-            {
-                return JsonNet(new ResponseResult(false, "The unit id is empty."));
-            }
-            var allTree = new SystemFunctionService().GetAll();
-            var mainPrivileges = new SystemPrivilegeService().GetByObjectId(mainId).ToList();//主单位的权限
-            var mainFunctions = new List<SystemFunctionEntity>();
-            mainPrivileges.ForEach(m =>
-            {
-                mainFunctions.Add(allTree.FirstOrDefault(j => j.FunKey == m.FunKey && m.Operate));
-            });
+            var functions = new SystemFunctionService().GetAll().ToList();
             List<object> alTree = new List<object>();
-            mainFunctions.Where(m => m.ParentId == "" ).ToList().ForEach(m =>
+            var mainFunctions = new List<SystemFunctionEntity>();
+            var mainPrivileges = new SystemPrivilegeService().GetByObjectId(unitId).ToList();//主单位的权限
+            if (UserContext.UnitType != UnitType.Admin )
             {
-                List<SystemFunctionEntity> childNode = mainFunctions.Where(j => j.ParentId == m.Id).ToList();
+                mainPrivileges.ForEach(m =>
+                {
+                    mainFunctions.Add(functions.FirstOrDefault(j => j.FunKey == m.FunKey && m.Operate));
+                });
+            }
+            else
+            {
+                mainFunctions = functions;
+            }
+            functions.Where(m => m.ParentId == "").ToList().ForEach(m =>
+            {
+                List<SystemFunctionEntity> childNode = functions.Where(j => j.ParentId == m.Id).ToList();
+                if (UserContext.UnitType != UnitType.Admin && m.Title == "设置")
+                {
+                    return;
+                }
                 if (childNode.Any())
                 {
                     alTree.Add(new { parent = m, childNode });
@@ -84,8 +74,8 @@ namespace LIMS.Web.Controllers.Setting
             return JsonNet(new ResponseResult(true, new
             {
                 UnitId = unitId,
-                Functions = alTree,
-                Privileges = new SystemPrivilegeService().GetByObjectId(unitId)
+                Functions = mainFunctions,
+                Privileges = mainPrivileges.Where(m=>m.Operate||m.Query)
             }));
         }
 
@@ -94,8 +84,6 @@ namespace LIMS.Web.Controllers.Setting
         /// </summary>
         /// <param name="unitId"></param>
         /// <returns></returns>
-        [AdminActionFilter(UnitType.Admin)]
-        [HttpPost]
         public JsonNetResult Save(string unitId, IList<PrivilegeItem> privileges)
         {
             if (string.IsNullOrEmpty(unitId))

@@ -19,6 +19,23 @@ namespace LIMS.Web.Controllers.Setting
     [BaseEntityValue]
     public class VendorSettingController : BaseController
     {
+
+        public ActionResult Vendors()
+        {
+            return View();
+        }
+
+        public ActionResult VendorEdit(string id)
+        {
+            if (!string.IsNullOrEmpty(id))
+            {
+                var mode = new UnitService().Get(id);
+                return View(mode);
+            }
+
+            return View();
+        }
+
         /// <summary>
         /// 根据ID获取单位信息
         /// </summary>
@@ -40,8 +57,6 @@ namespace LIMS.Web.Controllers.Setting
         /// </summary>
         /// <param name="vendor"></param>
         /// <returns></returns>
-        [AdminActionFilter(UnitType.Admin, UnitType.Vendor, UnitType.Hospital)]
-        [HttpPost]
         public JsonNetResult SaveVendor(UnitModel vendor)
         {
             if (vendor == null)
@@ -86,14 +101,15 @@ namespace LIMS.Web.Controllers.Setting
         /// <param name="condition"></param>
         /// <param name="pager"></param>
         /// <returns></returns>
-        [AdminActionFilter(UnitType.Admin, UnitType.Vendor, UnitType.Hospital)]
-        [HttpPost]
         public JsonNetResult QueryVendors(string condition, PagerInfo pager)
         {
             try
             {
                 var service = new UnitService();
-
+                if (UserContext.UnitType != UnitType.Admin)
+                {
+                    condition = UserContext.RootUnitName;
+                }
                 var list = service.QueryRoots(condition, UnitType.Vendor, pager);
 
                 var result = new List<UnitModel>();
@@ -117,12 +133,18 @@ namespace LIMS.Web.Controllers.Setting
             }
         }
 
+        public ActionResult VendorUnits()
+        {
+            var vendors = new UnitService().QueryRoots(UnitType.Vendor);
+            ViewBag.Vendors = vendors.Select(item => new { Id = item.Id, Name = item.Name });
+            return View();
+        }
+
         /// <summary>
         /// 获取供应商名称和ID
         /// </summary>
         /// <returns></returns>
-        [HttpPost]
-        public JsonNetResult VendorUnits()
+        public JsonNetResult JsonVendorUnits()
         {
             var vendors = new UnitService().QueryRoots(UnitType.Vendor);
             return JsonNet(new ResponseResult(true, vendors.Select(item => new { Id = item.Id, Name = item.Name })));
@@ -134,7 +156,6 @@ namespace LIMS.Web.Controllers.Setting
         /// <param name="vendorId"></param>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpPost]
         public ActionResult VendorUnitEdit(string vendorId, string id)
         {
             ViewBag.VendorId = vendorId;

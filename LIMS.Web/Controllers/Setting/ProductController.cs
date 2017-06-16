@@ -18,6 +18,11 @@ namespace LIMS.Web.Controllers.Setting
     [BaseEntityValue]
     public class ProductController : BaseController
     {
+        public ActionResult Index()
+        {
+            return View();
+        }
+
         /// <summary>
         /// 产品分页查询
         /// </summary>
@@ -37,10 +42,24 @@ namespace LIMS.Web.Controllers.Setting
         /// <param name="id">主键ID</param>
         /// <returns></returns>
         [HttpPost]
-        public JsonNetResult Edit(string id)
+        public JsonNetResult JsonEdit(string id)
         {
             var mode = new ProductService().Get(id);
             return JsonNet(new ResponseResult(true, mode));
+        }
+
+        public ActionResult Edit(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                return View();
+            }
+            else
+            {
+                var mode = new ProductService().Get(id);
+
+                return View(mode);
+            }
         }
 
         /// <summary>

@@ -23,7 +23,6 @@ namespace LIMS.Web.Controllers.Setting
         /// </summary>
         /// <param name="parentId"></param>
         /// <returns></returns>
-        [HttpPost]
         public JsonNetResult GetUnits(string parentId)
         {
             var list = new UnitService().GetByRootId(parentId);

@@ -22,6 +22,7 @@ namespace LIMS.Web.Controllers
     /// </summary>
     public class LogonController : Controller
     {
+        
         /// <summary>
         /// 登录验证
         /// </summary>

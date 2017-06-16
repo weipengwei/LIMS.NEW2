@@ -24,13 +24,21 @@ namespace LIMS.Web.Controllers.Profile
     {
         private readonly UserService _userService= new UserService();
 
+        public ActionResult Index()
+        {
+            ViewBag.ShowRoots = true;
+            string id = this.UserContext.UserId;
+            var mode = new UserService().Get(id);
+            ViewBag.ShowRoots = false;
+            ViewBag.Units = new UnitService().GetAllById(mode.UnitId);
+            return View(mode);
+        }
+
         /// <summary>
         /// 新增用户
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
-        [AdminActionFilter(UnitType.Admin, UnitType.Vendor, UnitType.Hospital)]
-        [HttpPost]
         public JsonNetResult Save(UserModel user)
         {
             if (!this.Validate(user))
@@ -85,39 +93,6 @@ namespace LIMS.Web.Controllers.Profile
             }
 
             return true;
-        }
-
-        /// <summary>
-        /// 获取用户权限
-        /// </summary>
-        /// <returns></returns>
-        [HttpPost]
-        public JsonNetResult UserPrivilege()
-        {
-            var user = _userService.Get(UserContext.UserId);
-            var unit = new UnitService().GetAllById(user.UnitId).FirstOrDefault();
-            bool isAdmin = user.Id == Constant.ADMIN_ID;
-            IList<SystemPrivilegeEntity> privileges=null;
-            if (unit != null && !string.IsNullOrWhiteSpace(unit.Id))
-            {
-                privileges = new SystemPrivilegeService().GetByObjectId(unit.Id);
-            }
-            return JsonNet(new ResponseResult(true, new
-            {
-                user = new
-                {
-                    user_Id = user.Id,
-                    user_Account = user.Account
-                },
-                unit = new
-                {
-                    unit_Type = isAdmin?"1" : unit.Type.GetHashCode().ToString(),
-                    unit_Name = isAdmin ? "" : unit.Name,
-                    unit_ParentId = isAdmin ? "" : unit.ParentId,
-                    unit_RootId = isAdmin ? "" : unit.RootId,
-                },
-                privileges
-            }));
         }
     }
 }

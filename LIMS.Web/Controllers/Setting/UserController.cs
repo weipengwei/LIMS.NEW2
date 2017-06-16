@@ -142,36 +142,7 @@ namespace LIMS.Web.Controllers.Setting
         }
 
         #endregion
+        
 
-
-
-        /// <summary>
-        /// 根据用户ID获取对应单位信息与权限
-        /// </summary>
-        /// <param name="account">用户ID</param>
-        /// <returns></returns>
-        [HttpPost]
-        public JsonNetResult GetUserRoot(string account)
-        {
-            UserEntity user = null;
-            UnitModel unit = null;
-            IList<SystemPrivilegeEntity> privilege = null;
-            if (UserService.TryGetUserByAccount(account, out user))
-            {
-                unit= _unitService.Get(user.UnitId);
-            }
-            if (unit != null)
-            {
-                privilege= _systemPrivilegeService.GetByObjectId(unit.Id,0);
-            }
-            return JsonNet(new ResponseResult(true,new
-            {
-                user_id= user==null?"": user.Id,
-                unit_id = unit == null ? "" : unit.Id,
-                unit_Type= unit?.Type.GetHashCode() ?? 0,
-                unit_ParentId = unit == null ? "" : unit.ParentId,
-                SystemPrivilege= privilege?.Select(m=> new {m.Id,m.FunKey})
-            }));
-        }
     }
 }
