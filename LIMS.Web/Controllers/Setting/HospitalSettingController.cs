@@ -50,7 +50,7 @@ namespace LIMS.Web.Controllers.Setting
         [HttpPost]
         public JsonNetResult JsonQuery(string condition, PagerInfo pager)
         {
-            if (UserContext.UnitType != UnitType.Admin)
+            if (!Constant.IsAadmin(UserContext.UserId))
             {
                 condition = new UnitService().Get(UserContext.RootUnitId)?.Name;
             }
@@ -101,7 +101,7 @@ namespace LIMS.Web.Controllers.Setting
             {
                 return JsonNet(new ResponseResult(false, "The required attributes of hospital are not filled.", ErrorCodes.RequireField));
             }
-            if (UserContext.UnitType != UnitType.Admin && UserContext.RootUnitId != hospital.Id)
+            if (!Constant.IsAadmin(UserContext.UserId) && UserContext.RootUnitId != hospital.Id)
             {
                 return JsonNet(new ResponseResult(false, "只可修改本医院信息", ErrorCodes.RequireField));
             }

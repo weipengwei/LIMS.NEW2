@@ -106,7 +106,7 @@ namespace LIMS.Web.Controllers.Setting
             try
             {
                 var service = new UnitService();
-                if (UserContext.UnitType != UnitType.Admin)
+                if (!Constant.IsAadmin(UserContext.UserId))
                 {
                     condition = UserContext.RootUnitName;
                 }

@@ -36,9 +36,10 @@ namespace LIMS.Web.Controllers.Setting
         /// 超级管理员管理权限
         /// </summary>
         /// <param name="unitId"></param>
+        /// <param name="rootUnitId"></param>
         /// <returns></returns>
         [HttpPost]
-        public JsonNetResult GetPrivilegesAdmin(string unitId)
+        public JsonNetResult GetPrivilegesAdmin(string unitId,string rootUnitId)
         {
             if (string.IsNullOrEmpty(unitId))
             {
@@ -47,11 +48,24 @@ namespace LIMS.Web.Controllers.Setting
             var functions = new SystemFunctionService().GetAll().ToList();
             List<object> alTree = new List<object>();
             var mainFunctions = new List<SystemFunctionEntity>();
-            var mainPrivileges = new SystemPrivilegeService().GetByObjectId(unitId).ToList();//主单位的权限
-            if (UserContext.UnitType != UnitType.Admin )
+            var mainPrivileges = new SystemPrivilegeService().GetByObjectId(rootUnitId).ToList();//主单位的权限
+            var funKeyList=new List<Funkey>
+            {
+                Funkey.User,
+                Funkey.HospitalSetting,
+                Funkey.HospitalSettingUnit,
+                Funkey.Product,
+                Funkey.VendorSettingUnit,
+                Funkey.VendorSetting,
+            };
+            if (!Constant.IsAadmin(UserContext.UserId))
             {
                 mainPrivileges.ForEach(m =>
                 {
+                    if (funKeyList.Any(j => j.ToString() == m.FunKey))
+                    {
+                        return; 
+                    }
                     mainFunctions.Add(functions.FirstOrDefault(j => j.FunKey == m.FunKey && m.Operate));
                 });
             }
@@ -59,13 +73,9 @@ namespace LIMS.Web.Controllers.Setting
             {
                 mainFunctions = functions;
             }
-            functions.Where(m => m.ParentId == "").ToList().ForEach(m =>
+            mainFunctions.Where(m => m.ParentId == string.Empty).ToList().ForEach(m =>
             {
                 List<SystemFunctionEntity> childNode = functions.Where(j => j.ParentId == m.Id).ToList();
-                if (UserContext.UnitType != UnitType.Admin && m.Title == "设置")
-                {
-                    return;
-                }
                 if (childNode.Any())
                 {
                     alTree.Add(new { parent = m, childNode });
@@ -74,8 +84,8 @@ namespace LIMS.Web.Controllers.Setting
             return JsonNet(new ResponseResult(true, new
             {
                 UnitId = unitId,
-                Functions = mainFunctions,
-                Privileges = mainPrivileges.Where(m=>m.Operate||m.Query)
+                Functions = alTree,
+                Privileges = new SystemPrivilegeService().GetByObjectId(unitId).ToList().Where(m=>m.Operate)//主单位的权限
             }));
         }
 

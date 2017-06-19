@@ -119,10 +119,6 @@ namespace LIMS.MVCFoundation.Core
                 this.RootUnitId = unit.RootId;
                 this.HospitalOrVendor = unit.Type == UnitType.Hospital || unit.Type == Util.UnitType.HospitalUnit;
             }
-            if (UserId == Constant.ADMIN_ID)
-            {
-                this.UnitType = UnitType.Admin;
-            }
             if (this.UnitId != this.RootUnitId)
             {
                 this.RootUnitName = "";
