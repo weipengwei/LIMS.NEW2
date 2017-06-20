@@ -88,7 +88,7 @@ namespace LIMS.Web.Controllers.Setting
                     Sequence = j.Sequence,
                     DisplayMode = j.DisplayMode,
                     SubFunctions = j.SubFunctions,
-                    Operate = userPri.Any(w => w.ObjectId == j.Id && w.Operate)
+                    Operate = userPri.Any(w => w.FunKey == j.FunKey && w.Operate)
                 }).ToList();
                 if (childNode.Any())
                 {

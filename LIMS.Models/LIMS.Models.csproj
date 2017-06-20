@@ -65,6 +65,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResponseResult.cs" />
     <Compile Include="Setting\ContactInfoModel.cs" />
+    <Compile Include="Setting\SystemFunctionModel.cs" />
     <Compile Include="Setting\UnitModel.cs" />
     <Compile Include="Setting\ReceiptInfoModel.cs" />
     <Compile Include="Setting\UserModel.cs" />
@@ -72,6 +73,10 @@
     <Compile Include="SystemFunctionMode.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\LIMS.Entities\LIMS.Entities.csproj">
+      <Project>{bf83777b-b4d9-4ee4-ba6b-bb1ee627ccca}</Project>
+      <Name>LIMS.Entities</Name>
+    </ProjectReference>
     <ProjectReference Include="..\LIMS.Util\LIMS.Util.csproj">
       <Project>{e6379611-2113-4c47-b19d-a56450cbf29d}</Project>
       <Name>LIMS.Util</Name>
