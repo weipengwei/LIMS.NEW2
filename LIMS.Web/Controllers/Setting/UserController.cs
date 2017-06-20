@@ -48,7 +48,7 @@ namespace LIMS.Web.Controllers.Setting
         /// <returns></returns>
         public JsonNetResult JsonQuery(string condition, string rootId, string unitId, PagerInfo pager)
         {
-            if (this.IsAdmin)
+            if (!this.IsAdmin)
             {
                 condition = UserContext.RootUnitName;
             }
