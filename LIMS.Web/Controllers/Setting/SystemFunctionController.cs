@@ -10,6 +10,7 @@ using LIMS.MVCFoundation.Controllers;
 using LIMS.Services;
 using LIMS.Models;
 using LIMS.Entities;
+using LIMS.Models.Setting;
 using LIMS.Util;
 using LIMS.MVCFoundation.Attributes;
 
@@ -47,7 +48,8 @@ namespace LIMS.Web.Controllers.Setting
             var functions = new SystemFunctionService().GetAll().ToList();
             List<object> alTree = new List<object>();
             var mainFunctions = new List<SystemFunctionEntity>();
-            var funKeyList=new List<Funkey>
+            var userPri = new SystemPrivilegeService().GetByObjectId(unitId).ToList().Where(m => m.Operate);
+            var funKeyList = new List<Funkey>
             {
                 Funkey.User,
                 Funkey.HospitalSetting,
@@ -63,7 +65,7 @@ namespace LIMS.Web.Controllers.Setting
                 {
                     if (funKeyList.Any(j => j.ToString() == m.FunKey))
                     {
-                        return; 
+                        return;
                     }
                     mainFunctions.Add(functions.FirstOrDefault(j => j.FunKey == m.FunKey && m.Operate));
                 });
@@ -74,17 +76,29 @@ namespace LIMS.Web.Controllers.Setting
             }
             mainFunctions.Where(m => m.ParentId == string.Empty).ToList().ForEach(m =>
             {
-                List<SystemFunctionEntity> childNode = functions.Where(j => j.ParentId == m.Id).ToList();
+                List<SystemFunctionModel> childNode = functions.Where(j => j.ParentId == m.Id).Select(j => new SystemFunctionModel
+                {
+                    Id = j.Id,
+                    Title = j.Title,
+                    IsMenu = j.IsMenu,
+                    FunKey = j.FunKey,
+                    Url = j.Url,
+                    ParentId = j.ParentId,
+                    IsActive = j.IsActive,
+                    Sequence = j.Sequence,
+                    DisplayMode = j.DisplayMode,
+                    SubFunctions = j.SubFunctions,
+                    Operate = userPri.Any(w => w.ObjectId == j.Id && w.Operate)
+                }).ToList();
                 if (childNode.Any())
                 {
-                    alTree.Add(new { parent = m, childNode }); 
+                    alTree.Add(new { parent = m, childNode });
                 }
             });
             return JsonNet(new ResponseResult(true, new
             {
                 UnitId = unitId,
-                Functions = alTree,
-                Privileges = new SystemPrivilegeService().GetByObjectId(unitId).ToList().Where(m=>m.Operate)//主单位的权限
+                Functions = alTree
             }));
         }
 
