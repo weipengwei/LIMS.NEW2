@@ -50,7 +50,7 @@ namespace LIMS.Web.Controllers.Setting
         [HttpPost]
         public JsonNetResult JsonQuery(string condition, PagerInfo pager)
         {
-            if (!Constant.IsAadmin(UserContext.UserId))
+            if (!this.IsAdmin)
             {
                 condition = new UnitService().Get(UserContext.RootUnitId)?.Name;
             }
@@ -101,7 +101,7 @@ namespace LIMS.Web.Controllers.Setting
             {
                 return JsonNet(new ResponseResult(false, "The required attributes of hospital are not filled.", ErrorCodes.RequireField));
             }
-            if (!Constant.IsAadmin(UserContext.UserId) && UserContext.RootUnitId != hospital.Id)
+            if (!this.IsAdmin && UserContext.RootUnitId != hospital.Id)
             {
                 return JsonNet(new ResponseResult(false, "只可修改本医院信息", ErrorCodes.RequireField));
             }
@@ -599,7 +599,7 @@ namespace LIMS.Web.Controllers.Setting
         }
 
         /// <summary>
-        /// 申请产品获取请详细信息
+        /// 获取医院产品信息
         /// </summary>
         /// <param name="unitId">科室ID</param>
         /// <param name="productId">产品ID</param>
@@ -609,8 +609,15 @@ namespace LIMS.Web.Controllers.Setting
         {
             try
             {
+                var IsUsing = false;
                 var entity = new HospitalProductService().Get(unitId, productId);
-                return JsonNet(new ResponseResult(true, entity));
+                var product = new ProductService().GetByHospital(productId);
+                return JsonNet(new ResponseResult(true, new
+                {
+                    entity= entity,
+                    product= product,
+                    IsUsing= entity==null
+                }));
             }
             catch (Exception e)
             {

@@ -74,16 +74,6 @@ namespace LIMS.Util
 
         public const string NO_EXIST_PRODUCT = "产品不存在";
         public const string QUERY_NO_PRODUCT = "产品名为空";
-
-        /// <summary>
-        /// 判断是否是管理员
-        /// </summary>
-        /// <param name="accountId">用户ID</param>
-        /// <returns></returns>
-        public static bool IsAadmin(string accountId)
-        {
-            return accountId == ADMIN_ID;
-        }
     }
 
     public static class IdentityKey
