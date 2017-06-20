@@ -67,7 +67,11 @@ namespace LIMS.Web.Controllers.Setting
                     {
                         return;
                     }
-                    mainFunctions.Add(functions.FirstOrDefault(j => j.FunKey == m.FunKey ));
+                    if (functions.FirstOrDefault(j => j.FunKey == m.FunKey) != null)
+                    {
+                        mainFunctions.Add(functions.FirstOrDefault(j => j.FunKey == m.FunKey));
+                    }
+                    
                 });
                 mainFunctions.AddRange(functions.Where(m=>string.IsNullOrWhiteSpace(m.ParentId)));
             }
@@ -75,7 +79,6 @@ namespace LIMS.Web.Controllers.Setting
             {
                 mainFunctions = functions;
             }
-            mainFunctions.RemoveAll(m => m == null);
             mainFunctions.Where(m => string.IsNullOrWhiteSpace(m.ParentId)).ToList().ForEach(m =>
             {
                 List<SystemFunctionModel> childNode = mainFunctions.Where(j => j.ParentId == m.Id).Select(j => new SystemFunctionModel
