@@ -178,7 +178,7 @@ WHERE hospital_id = @p_hospital_id and product_id = @p_product_id", COLUMN_SQL);
             var sql = string.Format(@"insert into hospital_products({0})
 values(@p_id, @p_hospital_id, @p_unit_id, @p_product_id, @p_alias, @p_category, @p_need_check, @p_need_split, @p_split_capacity,
 @p_mini_split_number, @p_donate_count, @p_donate_base, @p_valid_days, @p_arrival_days, @p_price, @p_package_price, @p_contact_id, @p_is_active,
-@p_created_id, @p_created_time, @p_updated_id, @p_updated_time, @p_split_copies, @p_split_unit)", COLUMN_SQL);
+@p_created_id, @p_created_time, @p_updated_id, @p_updated_time, @p_split_copies, @p_split_unit,@p_grant_unit_count,@p_order_unit_count)", COLUMN_SQL);
             
             var dc = db.GetSqlStringCommand(sql);
 
@@ -208,6 +208,9 @@ values(@p_id, @p_hospital_id, @p_unit_id, @p_product_id, @p_alias, @p_category, 
             db.AddInParameter(dc, "p_updated_time", DbType.DateTime, entity.UpdatedTime);
             db.AddInParameter(dc, "p_split_copies", DbType.Int32, entity.SplitCopies);
             db.AddInParameter(dc, "p_split_unit", DbType.String, entity.SplitUnit);
+            db.AddInParameter(dc, "p_grant_unit_count", DbType.Int32, entity.GrantUnitCount);
+            db.AddInParameter(dc, "p_order_unit_count", DbType.Int32, entity.OrderUnitCount);
+
 
             db.ExecuteNonQuery(dc, trans);
         }
@@ -218,7 +221,8 @@ values(@p_id, @p_hospital_id, @p_unit_id, @p_product_id, @p_alias, @p_category, 
 alias = @p_alias, category=@p_category, need_check = @p_need_check, need_split = @p_need_split, split_capacity = @p_split_capacity,
 mini_split_number = @p_mini_split_number, donate_count = @p_donate_count, donate_base = @p_donate_base, valid_days = @p_valid_days, 
 arrival_days = @p_arrival_days, price = @p_price, package_price = @p_package_price, contact_id = @p_contact_id, is_active = @p_is_active,
-updated_id = @p_updated_id, updated_time = @p_updated_time, split_copies = @p_split_copies, split_unit = @p_split_unit where id = @p_id";
+updated_id = @p_updated_id, updated_time = @p_updated_time, split_copies = @p_split_copies, split_unit = @p_split_unit,grant_unit_count=@p_grant_unit_count,
+order_unit_count=@p_order_unit_count where id = @p_id";
             
             var dc = db.GetSqlStringCommand(sql);
             
@@ -241,6 +245,8 @@ updated_id = @p_updated_id, updated_time = @p_updated_time, split_copies = @p_sp
             db.AddInParameter(dc, "p_updated_time", DbType.DateTime, entity.UpdatedTime);
             db.AddInParameter(dc, "p_split_copies", DbType.Int32, entity.SplitCopies);
             db.AddInParameter(dc, "p_split_unit", DbType.String, entity.SplitUnit);
+            db.AddInParameter(dc, "p_grant_unit_count", DbType.Int32, entity.GrantUnitCount);
+            db.AddInParameter(dc, "p_order_unit_count", DbType.Int32, entity.OrderUnitCount);
 
             db.ExecuteNonQuery(dc, trans);
         }

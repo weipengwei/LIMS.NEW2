@@ -69,15 +69,9 @@ namespace LIMS.Entities
             get; set;
         }
 
-        public int GrantUnitCount
-        {
-            get;set;
-        }
+        public int GrantUnitCount { get; set; } = 1;
 
-        public int OrderUnitCount
-        {
-            get; set;
-        }
+        public int OrderUnitCount { get; set; } = 1;
 
         public int DonateCount
         {
