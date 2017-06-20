@@ -60,23 +60,25 @@ namespace LIMS.Web.Controllers.Setting
             };
             if (!this.IsAdmin)
             {
-                var mainPrivileges = new SystemPrivilegeService().GetByObjectId(UserContext.UnitId).ToList();//主单位的权限
+                var mainPrivileges = new SystemPrivilegeService().GetByObjectId(UserContext.UnitId).Where(m => m.Operate).ToList();//主单位的权限
                 mainPrivileges.ForEach(m =>
                 {
                     if (funKeyList.Any(j => j.ToString() == m.FunKey))
                     {
                         return;
                     }
-                    mainFunctions.Add(functions.FirstOrDefault(j => j.FunKey == m.FunKey && m.Operate));
+                    mainFunctions.Add(functions.FirstOrDefault(j => j.FunKey == m.FunKey ));
                 });
+                mainFunctions.AddRange(functions.Where(m=>string.IsNullOrWhiteSpace(m.ParentId)));
             }
             else
             {
                 mainFunctions = functions;
             }
-            mainFunctions.Where(m => m.ParentId == string.Empty).ToList().ForEach(m =>
+            mainFunctions.RemoveAll(m => m == null);
+            mainFunctions.Where(m => string.IsNullOrWhiteSpace(m.ParentId)).ToList().ForEach(m =>
             {
-                List<SystemFunctionModel> childNode = functions.Where(j => j.ParentId == m.Id).Select(j => new SystemFunctionModel
+                List<SystemFunctionModel> childNode = mainFunctions.Where(j => j.ParentId == m.Id).Select(j => new SystemFunctionModel
                 {
                     Id = j.Id,
                     Title = j.Title,
