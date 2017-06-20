@@ -609,7 +609,6 @@ namespace LIMS.Web.Controllers.Setting
         {
             try
             {
-                var IsUsing = false;
                 var entity = new HospitalProductService().Get(unitId, productId);
                 var product = new ProductService().GetByHospital(productId);
                 return JsonNet(new ResponseResult(true, new
