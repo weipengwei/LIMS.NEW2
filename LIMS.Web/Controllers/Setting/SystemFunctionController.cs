@@ -71,9 +71,9 @@ namespace LIMS.Web.Controllers.Setting
                     {
                         mainFunctions.Add(functions.FirstOrDefault(j => j.FunKey == m.FunKey));
                     }
-                    
+
                 });
-                mainFunctions.AddRange(functions.Where(m=>string.IsNullOrWhiteSpace(m.ParentId)));
+                mainFunctions.AddRange(functions.Where(m => string.IsNullOrWhiteSpace(m.ParentId)));
             }
             else
             {
@@ -227,6 +227,22 @@ namespace LIMS.Web.Controllers.Setting
             var privileges = new UserPrivilegeService().Query(userId, parentId);
 
             return JsonNet(new ResponseResult(true, new { units = units, privileges = privileges }));
+        }
+
+        public JsonNetResult JsonGetUserPrivileges(string userId, string parentId)
+        {
+            var units = new UnitService().GetByRootId(parentId).ToList();
+            var privileges = new UserPrivilegeService().Query(userId, parentId);
+            var operateUnits = new List<UserUnitModel>();
+            units.ForEach(m =>
+            {
+                operateUnits.Add(new UserUnitModel
+                {
+                    Id = m.Id,
+                    Operate = privileges.Any(j => j.UnitId == m.Id && j.Operate)
+                });
+            });
+            return JsonNet(new ResponseResult(true, new { units = operateUnits }));
         }
     }
 }
