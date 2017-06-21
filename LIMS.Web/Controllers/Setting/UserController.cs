@@ -105,12 +105,14 @@ namespace LIMS.Web.Controllers.Setting
             }
 
             var service = new UserService();
-            var validationUser = service.GetByAccount(user.Account, user.Id);
-            if (validationUser != null)
+            if (string.IsNullOrEmpty(user.Id))
             {
-                return JsonNet(new ResponseResult(true, "账号重复了！"));
+                var validationUser = service.GetByAccount(user.Account, user.Id);
+                if (validationUser != null)
+                {
+                    return JsonNet(new ResponseResult(false, "账号重复了！"));
+                }
             }
-
             service.Save(new UserEntity
             {
                 Id = user.Id,
