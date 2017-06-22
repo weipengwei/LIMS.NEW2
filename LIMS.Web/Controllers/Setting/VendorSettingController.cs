@@ -274,7 +274,7 @@ namespace LIMS.Web.Controllers.Setting
         /// <param name="productId">产品ID</param>
         /// <returns></returns>
         [HttpPost]
-        public JsonNetResult JsonGetHospitalProduct(string unitId, string productId)
+        public JsonNetResult JsonGetVendorProduct(string unitId, string productId)
         {
             try
             {
