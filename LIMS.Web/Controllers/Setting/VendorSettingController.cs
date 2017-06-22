@@ -342,9 +342,22 @@ namespace LIMS.Web.Controllers.Setting
             {
                 throw new Exception("The id unit is empty.");
             }
-            var hospitals = new UnitService().QueryRoots(UnitType.Hospital);
+            var hospitals = new UnitService().QueryRoots(UnitType.Hospital).ToList();
             var selectedHospitals = new VendorHospitalService().GetByVendor(id);
-            return JsonNet(new ResponseResult(true, new { vendorId=id, hospitals = hospitals, selectedHospitals = selectedHospitals }));
+            var notSelectedHospitals = new List<UnitEntity>();
+            var selectedHospital = new List<UnitEntity>();
+            hospitals.ForEach(m =>
+            {
+                if (selectedHospitals.All(j => j.HospitalId != m.Id))
+                {
+                    notSelectedHospitals.Add(m);
+                }
+                else
+                {
+                    selectedHospital.Add(m);
+                }
+            });
+            return JsonNet(new ResponseResult(true, new { vendorId=id, notSelectedHospitals = notSelectedHospitals, selectedHospitals = selectedHospital }));
         }
 
         public JsonNetResult SaveVendorHospitals(string vendorId, IList<string> hospitals)
