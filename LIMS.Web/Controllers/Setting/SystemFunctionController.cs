@@ -240,6 +240,7 @@ namespace LIMS.Web.Controllers.Setting
                 {
                     Id = m.Id,
                     Name = m.Name,
+                    RootId = m.RootId,
                     Operate = privileges.Any(j => j.UnitId == m.Id && j.Operate)
                 });
             });
