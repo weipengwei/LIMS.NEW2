@@ -237,6 +237,22 @@ namespace LIMS.Web.Controllers.Setting
             return View();
         }
 
+        /// <summary>
+        /// 获取供应商产品
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public JsonNetResult JsonVendorProducts(string id)
+        {
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                throw new Exception("The id unit is empty.");
+            }
+            var units = new UnitService().GetByRootId(id).Select(item => new {Id = item.Id, Name = item.Name});
+            var products = new ProductService().Query().Select(item => new {Id = item.Id, Name = item.Name});
+            return JsonNet(new ResponseResult(true, new { units= units, products= products }));
+        }
+
         public JsonNetResult GetVendorProduct(string unitId, string productId)
         {
             try
@@ -287,6 +303,22 @@ namespace LIMS.Web.Controllers.Setting
             };
 
             return View();
+        }
+
+        /// <summary>
+        /// 获取供应商关联的医院
+        /// </summary>
+        /// <param name="id">供应商ID</param>
+        /// <returns></returns>
+        public ActionResult JsonVendorHospitals(string id)
+        {
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                throw new Exception("The id unit is empty.");
+            }
+            var hospitals = new UnitService().QueryRoots(UnitType.Hospital);
+            var selectedHospitals = new VendorHospitalService().GetByVendor(id);
+            return JsonNet(new ResponseResult(true, new { vendorId=id, hospitals = hospitals, selectedHospitals = selectedHospitals }));
         }
 
         public JsonNetResult SaveVendorHospitals(string vendorId, IList<string> hospitals)
