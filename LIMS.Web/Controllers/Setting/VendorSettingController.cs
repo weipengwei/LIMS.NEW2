@@ -267,6 +267,32 @@ namespace LIMS.Web.Controllers.Setting
             }
         }
 
+        /// <summary>
+        /// 获取产品信息
+        /// </summary>
+        /// <param name="unitId">科室ID</param>
+        /// <param name="productId">产品ID</param>
+        /// <returns></returns>
+        [HttpPost]
+        public JsonNetResult JsonGetHospitalProduct(string unitId, string productId)
+        {
+            try
+            {
+                var entity = new VendorProductService().Get(unitId, productId);
+                var product = new ProductService().GetByHospital(productId);
+                return JsonNet(new ResponseResult(true, new
+                {
+                    entity = entity,
+                    product = product,
+                    IsUsing = entity == null
+                }));
+            }
+            catch (Exception e)
+            {
+                return JsonNet(new ResponseResult(e));
+            }
+        }
+
         public JsonNetResult SaveVendorProduct(VendorProductEntity entity)
         {
             try
