@@ -69,6 +69,7 @@
     <Compile Include="Setting\UnitModel.cs" />
     <Compile Include="Setting\ReceiptInfoModel.cs" />
     <Compile Include="Setting\UserModel.cs" />
+    <Compile Include="Setting\UserUnitModel.cs" />
     <Compile Include="Setting\VendorProductModel.cs" />
     <Compile Include="SystemFunctionMode.cs" />
   </ItemGroup>
