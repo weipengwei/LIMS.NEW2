@@ -239,6 +239,7 @@ namespace LIMS.Web.Controllers.Setting
                 operateUnits.Add(new UserUnitModel
                 {
                     Id = m.Id,
+                    Name = m.Name,
                     Operate = privileges.Any(j => j.UnitId == m.Id && j.Operate)
                 });
             });
