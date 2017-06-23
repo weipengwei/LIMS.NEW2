@@ -33,7 +33,7 @@ namespace LIMS.Web.Controllers.Setting
         public JsonNetResult Query(string condition, PagerInfo pager)
         {
             var list = new ProductService().Query(condition, pager);
-            return JsonNet(new ResponseResult(true, list, pager));
+             return JsonNet(new ResponseResult(true, list, pager));
         }
 
         /// <summary>

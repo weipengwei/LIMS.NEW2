@@ -309,10 +309,23 @@ namespace LIMS.Web.Controllers.Setting
             {
                 return JsonNet(new ResponseResult(false, null));
             }
-            var list = new ReceiptInfoService().GetByHospital(hospitalId);
+            var list = new ReceiptInfoService().GetByHospital(hospitalId).ToList();
+            List<object> receiptsList=new List<object>();
+            list.ForEach(m =>
+            {
+                receiptsList.Add(new
+                {
+                    Id = m.Id,
+                    HospitalId = m.HospitalId,
+                    Title = m.Title,
+                    Tax = m.Tax,
+                    display = true,
+                    edit = false
+                });
+            });
             return JsonNet(new ResponseResult(true, new
             {
-                Receipts = list,
+                Receipts = receiptsList,
                 hospitalId
             }));
         }
@@ -407,6 +420,10 @@ namespace LIMS.Web.Controllers.Setting
             try
             {
                 var service = new UnitService();
+                if (!this.IsAdmin)
+                {
+                    parentId = UserContext.RootUnitId;
+                }
                 var list = service.QueryUnits(condition, parentId, pager);
 
                 var result = new List<dynamic>();
